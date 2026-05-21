@@ -3,12 +3,12 @@ definePageMeta({
   layout: 'admin'
 })
 
-import { 
-  Search, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Filter, 
+import {
+  Search,
+  Plus,
+  Edit3,
+  Trash2,
+  Filter,
   MoreVertical,
   ChevronLeft,
   ChevronRight,
@@ -24,6 +24,9 @@ const search = ref('')
 const statusFilter = ref('all') // all, publish, draft
 const typeFilter = ref('all') // all, article, post, program, page
 const syncing = ref(false)
+
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
 
 const syncSimba = async () => {
   const { value: formValues } = await Swal.fire({
@@ -68,7 +71,7 @@ const syncSimba = async () => {
 
   syncing.value = true
   try {
-    const response = await $fetch('/api/v1/posts/sync-simba', { 
+    const response = await $fetch('/api/v1/posts/sync-simba', {
       method: 'POST',
       body: {
         page: formValues.page,
@@ -94,9 +97,26 @@ const { data: postsData, pending, refresh } = await useFetch('/api/v1/posts', {
     search: search.value,
     status: statusFilter.value === 'all' ? '' : statusFilter.value,
     type: typeFilter.value === 'all' ? '' : typeFilter.value,
-    limit: 10
+    page: currentPage.value,
+    limit: itemsPerPage.value
   }))
 })
+
+const totalPages = computed(() => {
+  return Math.ceil((postsData.value?.total || 0) / itemsPerPage.value)
+})
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
 
 const deletePost = async (id) => {
   const result = await Swal.fire({
@@ -147,15 +167,13 @@ const counts = computed(() => {
         <p class="text-sm text-slate-500 font-medium">Kelola artikel, program, dan halaman statis BAZNAS.</p>
       </div>
       <div class="flex items-center gap-3">
-        <button 
-          @click="syncSimba" 
-          :disabled="syncing"
-          class="flex items-center gap-2 bg-emerald-700 text-white px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-emerald-800 disabled:bg-emerald-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
-        >
+        <button @click="syncSimba" :disabled="syncing"
+          class="flex items-center gap-2 bg-emerald-700 text-white px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-emerald-800 disabled:bg-emerald-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
           <RefreshCw :class="{ 'animate-spin': syncing }" class="w-4 h-4" />
           {{ syncing ? 'Syncing...' : 'Sync SIMBA' }}
         </button>
-        <NuxtLink to="/admin/posts/new" class="flex items-center gap-2 bg-[#fecb00] text-slate-900 px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-500/20 active:scale-95">
+        <NuxtLink to="/admin/posts/new"
+          class="flex items-center gap-2 bg-[#fecb00] text-slate-900 px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-500/20 active:scale-95">
           <Plus class="w-4 h-4" />
           Tambah Baru
         </NuxtLink>
@@ -164,31 +182,36 @@ const counts = computed(() => {
 
     <!-- WordPress Style Tabs -->
     <div class="flex items-center gap-6 mb-4 px-2 border-b border-slate-200">
-      <button @click="statusFilter = 'all'" :class="[statusFilter === 'all' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']" class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
+      <button @click="statusFilter = 'all'"
+        :class="[statusFilter === 'all' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']"
+        class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
         Semua <span class="ml-1 opacity-50 text-[10px]">({{ counts.all }})</span>
       </button>
-      <button @click="statusFilter = 'publish'" :class="[statusFilter === 'publish' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']" class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
+      <button @click="statusFilter = 'publish'"
+        :class="[statusFilter === 'publish' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']"
+        class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
         Terbit <span class="ml-1 opacity-50 text-[10px]">({{ counts.publish }})</span>
       </button>
-      <button @click="statusFilter = 'draft'" :class="[statusFilter === 'draft' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']" class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
+      <button @click="statusFilter = 'draft'"
+        :class="[statusFilter === 'draft' ? 'text-emerald-700 border-emerald-700 font-bold' : 'text-slate-400 border-transparent hover:text-slate-600']"
+        class="pb-3 px-1 text-xs uppercase tracking-widest border-b-2 transition-all">
         Draft <span class="ml-1 opacity-50 text-[10px]">({{ counts.draft }})</span>
       </button>
     </div>
 
     <!-- Toolbar -->
-    <div class="bg-white border border-slate-200 rounded-sm shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center">
+    <div
+      class="bg-white border border-slate-200 rounded-sm shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center">
       <div class="relative flex-1 group">
-        <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
-        <input 
-          v-model="search"
-          type="text" 
-          placeholder="Cari berdasarkan judul atau konten..." 
-          class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 pl-10 pr-4 text-sm outline-none focus:border-emerald-600 transition-all"
-        />
+        <Search
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+        <input v-model="search" type="text" placeholder="Cari berdasarkan judul atau konten..."
+          class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 pl-10 pr-4 text-sm outline-none focus:border-emerald-600 transition-all" />
       </div>
-      
+
       <div class="flex items-center gap-2">
-        <select v-model="typeFilter" class="bg-slate-50 border border-slate-200 rounded-sm py-2 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:border-emerald-600 text-slate-600">
+        <select v-model="typeFilter"
+          class="bg-slate-50 border border-slate-200 rounded-sm py-2 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:border-emerald-600 text-slate-600">
           <option value="all">Semua Tipe</option>
           <option value="article">Artikel</option>
           <option value="post">Berita</option>
@@ -203,7 +226,8 @@ const counts = computed(() => {
 
     <!-- Data Table -->
     <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden relative min-h-[400px]">
-      <div v-if="pending" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
+      <div v-if="pending"
+        class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
         <div class="flex flex-col items-center gap-3">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-700"></div>
           <p class="text-[10px] font-black text-emerald-700 uppercase tracking-[0.3em]">Memuat Data...</p>
@@ -212,7 +236,8 @@ const counts = computed(() => {
 
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] border-b border-slate-200 font-black">
+          <tr
+            class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] border-b border-slate-200 font-black">
             <th class="px-6 py-5">Info Konten</th>
             <th class="px-6 py-5 text-center">Tipe</th>
             <th class="px-6 py-5 text-center">Status</th>
@@ -225,13 +250,16 @@ const counts = computed(() => {
             <td class="px-6 py-5">
               <div class="flex gap-4 items-start">
                 <div class="w-12 h-12 bg-slate-100 rounded-sm border border-slate-200 flex-shrink-0 overflow-hidden">
-                  <img v-if="post.featured_image_url" :src="post.featured_image_url" class="w-full h-full object-cover" />
+                  <img v-if="post.featured_image_url" :src="post.featured_image_url"
+                    class="w-full h-full object-cover" />
                   <div v-else class="w-full h-full flex items-center justify-center">
                     <FileText class="w-4 h-4 text-slate-300" />
                   </div>
                 </div>
                 <div class="flex-1">
-                  <h3 class="font-black text-slate-800 text-sm mb-1 leading-tight group-hover:text-emerald-700 transition-colors">{{ post.post_title }}</h3>
+                  <h3
+                    class="font-black text-slate-800 text-sm mb-1 leading-tight group-hover:text-emerald-700 transition-colors">
+                    {{ post.post_title }}</h3>
                   <div class="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                     <span>Oleh {{ post.author || 'Admin' }}</span>
                     <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
@@ -241,32 +269,38 @@ const counts = computed(() => {
               </div>
             </td>
             <td class="px-6 py-5 text-center">
-              <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-sm text-[9px] font-black uppercase tracking-widest text-slate-500">
+              <span
+                class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-sm text-[9px] font-black uppercase tracking-widest text-slate-500">
                 {{ post.post_type }}
               </span>
             </td>
             <td class="px-6 py-5 text-center">
-              <span 
-                :class="[
-                  post.post_status === 'publish' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'
-                ]"
-                class="px-3 py-1 rounded-sm text-[9px] font-black uppercase tracking-widest border"
-              >
+              <span :class="[
+                post.post_status === 'publish' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'
+]" class="px-3 py-1 rounded-sm text-[9px] font-black uppercase tracking-widest border">
                 {{ post.post_status }}
               </span>
             </td>
             <td class="px-6 py-5 text-center">
               <div class="flex flex-col items-center gap-0.5">
-                <span class="text-[11px] font-bold text-slate-700">{{ new Date(post.post_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
-                <span class="text-[9px] text-slate-400 font-medium italic">{{ new Date(post.post_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) }} WIB</span>
+                <span class="text-[11px] font-bold text-slate-700">{{ new
+                  Date(post.post_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                }}</span>
+                <span class="text-[9px] text-slate-400 font-medium italic">{{ new
+                  Date(post.post_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) }} WIB</span>
               </div>
             </td>
             <td class="px-6 py-5 text-right">
-              <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                <NuxtLink :to="`/admin/posts/${post.ID}`" class="p-2 bg-white hover:bg-emerald-600 hover:text-white rounded-sm border border-slate-200 shadow-sm transition-all" title="Edit Konten">
+              <div
+                class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                <NuxtLink :to="`/admin/posts/${post.ID}`"
+                  class="p-2 bg-white hover:bg-emerald-600 hover:text-white rounded-sm border border-slate-200 shadow-sm transition-all"
+                  title="Edit Konten">
                   <Edit3 class="w-4 h-4" />
                 </NuxtLink>
-                <button @click="deletePost(post.ID)" class="p-2 bg-white hover:bg-red-600 hover:text-white rounded-sm border border-slate-200 shadow-sm transition-all" title="Hapus Permanen">
+                <button @click="deletePost(post.ID)"
+                  class="p-2 bg-white hover:bg-red-600 hover:text-white rounded-sm border border-slate-200 shadow-sm transition-all"
+                  title="Hapus Permanen">
                   <Trash2 class="w-4 h-4" />
                 </button>
               </div>
@@ -286,13 +320,20 @@ const counts = computed(() => {
 
       <!-- Footer / Pagination -->
       <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between">
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total Konten: {{ postsData?.data?.length || 0 }}</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total Konten: {{ postsData?.total ||
+          0 }}</p>
         <div class="flex items-center gap-1">
-          <button class="p-2 bg-white border border-slate-200 rounded-sm text-slate-400 hover:bg-slate-50 transition-all disabled:opacity-50">
+          <button @click="prevPage" :disabled="currentPage === 1 || pending"
+            class="p-2 bg-white border border-slate-200 rounded-sm text-slate-400 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronLeft class="w-4 h-4" />
           </button>
-          <button class="p-2 bg-white border border-emerald-600 rounded-sm text-emerald-700 text-[10px] font-black px-4">1</button>
-          <button class="p-2 bg-white border border-slate-200 rounded-sm text-slate-400 hover:bg-slate-50 transition-all">
+          <button v-for="pageNumber in totalPages" :key="pageNumber" @click="currentPage = pageNumber"
+            :class="[pageNumber === currentPage ? 'border-emerald-600 text-emerald-700' : 'border-slate-200 text-slate-400 hover:bg-slate-50']"
+            class="p-2 bg-white border rounded-sm text-[10px] font-black px-4 transition-all">
+            {{ pageNumber }}
+          </button>
+          <button @click="nextPage" :disabled="currentPage === totalPages || pending"
+            class="p-2 bg-white border border-slate-200 rounded-sm text-slate-400 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronRight class="w-4 h-4" />
           </button>
         </div>
@@ -305,9 +346,11 @@ const counts = computed(() => {
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #e2e8f0;
   border-radius: 10px;

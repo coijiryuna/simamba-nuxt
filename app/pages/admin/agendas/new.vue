@@ -1,0 +1,189 @@
+<script setup>
+definePageMeta({
+    layout: 'admin'
+})
+
+import {
+    ArrowLeft,
+    Save,
+    Image as ImageIcon,
+    X,
+    Upload
+} from 'lucide-vue-next'
+import Swal from 'sweetalert2'
+
+const route = useRoute()
+const router = useRouter()
+const type = route.query.type || 'post'
+
+// Form State
+const form = reactive({
+    agenda_title: '',
+    agenda_content: '',
+    agenda_status: 'publish',
+    agenda_type: type,
+    tags: '',
+    featured_image: null
+})
+
+const imagePreview = ref(null)
+// Handle Image Change
+const onFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+        form.featured_image = file
+        imagePreview.value = URL.createObjectURL(file)
+    }
+}
+// Submit Form
+const loading = ref(false)
+const submit = async () => {
+    if (!form.agenda_title || !form.agenda_content) {
+        Swal.fire('Oops!', 'Judul dan Konten wajib diisi!', 'warning')
+        return
+    }
+
+    loading.value = true
+    const formData = new FormData()
+    formData.append('agenda_title', form.agenda_title)
+    formData.append('agenda_content', form.agenda_content)
+    formData.append('agenda_status', form.agenda_status)
+    formData.append('agenda_type', form.agenda_type)
+    if (form.featured_image) {
+        formData.append('featured_image', form.featured_image)
+    }
+
+    try {
+        await $fetch('/api/v1/agendas', {
+            method: 'POST',
+            body: formData
+        })
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Agenda berhasil diterbitkan.',
+            timer: 1500,
+            showConfirmButton: false
+        })
+        router.push('/admin/agendas')
+    } catch (error) {
+        Swal.fire('Gagal!', 'Gagal menyimpan Agenda: ' + error.message, 'error')
+    } finally {
+        loading.value = false
+    }
+}
+</script>
+
+<template>
+    <div>
+        <div class="flex items-center gap-4 mb-8">
+            <NuxtLink to="/admin/agendas" class="p-2 hover:bg-white rounded-sm border border-slate-200 text-slate-500">
+                <ArrowLeft class="w-5 h-5" />
+            </NuxtLink>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Buat Agenda Baru</h1>
+                <p class="text-sm text-slate-500">Tuliskan informasi terbaru untuk disebarkan ke publik.</p>
+            </div>
+        </div>
+
+        <form @submit.prevent="submit" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Judul
+                            Agenda</label>
+                        <input v-model="form.agenda_title" type="text" placeholder="Masukkan judul agenda di sini..."
+                            class="w-full text-xl font-bold bg-slate-50 border border-slate-200 rounded-sm py-3 px-4 focus:border-emerald-600 outline-none transition-all" />
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Konten
+                            Agenda</label>
+                        <AdminEditor v-model="form.agenda_content" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Area -->
+            <div class="space-y-6">
+                <!-- Post Type Box -->
+                <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Tipe Konten</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-2 gap-3">
+                        <label v-for="t in ['pimpinan', 'kegiatan', 'pengumpulan', 'pendistribusian']" :key="t"
+                            class="flex items-center gap-2 p-2 border border-slate-100 rounded-sm cursor-pointer hover:bg-slate-50 transition-colors"
+                            :class="{ 'bg-emerald-50 border-emerald-200': form.agenda_type === t }">
+                            <input type="radio" v-model="form.agenda_type" :value="t"
+                                class="w-4 h-4 text-emerald-600 focus:ring-emerald-500" />
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">{{ t }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Publishing Box -->
+                <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Publikasi</h3>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">Status Konten</label>
+                            <select v-model="form.agenda_status"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 px-3 text-sm focus:border-emerald-600 outline-none">
+                                <option value="publish">Publikasikan Sekarang</option>
+                                <option value="draft">Simpan Sebagai Draft</option>
+                            </select>
+                        </div>
+                        <button type="submit" :disabled="loading"
+                            class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-sm font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-700/20 disabled:bg-slate-400">
+                            <Save v-if="!loading" class="w-4 h-4" />
+                            <div v-else class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            {{ loading ? 'Menyimpan...' : 'Simpan & Publikasikan' }}
+                        </button>
+                    </div>
+                </div>
+
+           
+
+                <!-- Image Box -->
+                <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Gambar Unggulan</h3>
+                    </div>
+                    <div class="p-4">
+                        <div v-if="imagePreview" class="relative mb-4 group">
+                            <img :src="imagePreview"
+                                class="w-full aspect-video object-cover rounded-sm border border-slate-200 shadow-sm" />
+                            <button @click="imagePreview = null; form.featured_image = null"
+                                class="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-sm shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <X class="w-4 h-4" />
+                            </button>
+                        </div>
+                        <div v-else
+                            class="border-2 border-dashed border-slate-200 rounded-sm p-8 text-center hover:border-emerald-400 transition-colors group cursor-pointer relative">
+                            <input type="file" @change="onFileChange" accept="image/*"
+                                class="absolute inset-0 opacity-0 cursor-pointer" />
+                            <Upload class="w-8 h-8 text-slate-300 mx-auto mb-2 group-hover:text-emerald-500" />
+                            <p
+                                class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 uppercase tracking-widest">
+                                Klik untuk Upload</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+}
+</style>

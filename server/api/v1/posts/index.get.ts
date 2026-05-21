@@ -60,10 +60,25 @@ export default defineEventHandler(async (event) => {
     params.push(limit, offset);
 
     const [rows] = await db.query(sql, params);
+
+    let countSql = `SELECT COUNT(DISTINCT p.ID) as total FROM tbl_posts p`;
+    if (category) {
+      countSql += `
+        JOIN tbl_term_relationships tr ON tr.object_id = p.ID
+        JOIN tbl_term_taxonomy tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+        JOIN tbl_terms t ON t.term_id = tt.term_id
+      `;
+    }
+    if (conditions.length > 0) {
+      countSql += " WHERE " + conditions.join(" AND ");
+    }
+    const [countRows] = await db.query(countSql, params.slice(0, params.length - 2)) as any[]; // remove limit and offset
+    const total = countRows[0].total;
     
     return {
       page,
       limit,
+      total,
       data: rows
     };
   } catch (error) {

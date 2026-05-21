@@ -1,13 +1,13 @@
 <script setup>
-import { 
-  LayoutDashboard, 
-  FileText, 
+import {
+  LayoutDashboard,
+  FileText,
   Files,
-  Image as ImageIcon, 
-  Tag, 
-  Layers, 
-  Inbox, 
-  Users, 
+  Image as ImageIcon,
+  Tag,
+  Layers,
+  Inbox,
+  Users,
   Settings,
   Menu,
   User,
@@ -21,7 +21,8 @@ import {
   MessageSquare,
   Mail,
   Bell,
-  Download
+  Download,
+  Calendar,
 } from 'lucide-vue-next'
 
 import Swal from 'sweetalert2'
@@ -37,14 +38,16 @@ const settings = computed(() => settingsRes.value?.data || {})
 // Computed menuItems biar otomatis filter berdasarkan role dan Tab Aplikasi
 const menuItems = computed(() => {
   const role = user.value?.role?.toLowerCase() || 'admin'
-  
+
   const allMenus = [
     // --- APP: WEBSITE UTAMA ---
     { name: 'Dashboard Web', icon: LayoutDashboard, to: '/admin', app: 'website', exact: true },
     { name: 'Berita & Artikel', icon: FileText, to: '/admin/posts', groupHeader: 'Manajemen Konten', app: 'website' },
+    { name: 'Agenda & Kegiatan', icon: Calendar, to: '/admin/agendas', app: 'website' },
     { name: 'Halaman Statis', icon: Files, to: '/admin/pages', app: 'website' },
     { name: 'Galery Foto', icon: ImageIcon, to: '/admin/gallery', app: 'website' },
     { name: 'Kategori & Menu', icon: Tag, to: '/admin/categories', app: 'website' },
+    { name: 'Bank & Rekening', icon: CreditCard, to: '/admin/bank', app: 'website' },
     { name: 'Sliders Banner', icon: Layers, to: '/admin/sliders', app: 'website' },
     { name: 'Live Chat', icon: MessageSquare, to: '/admin/chats', app: 'website' },
     { name: 'Unduhan & Dokumen', icon: Download, to: '/admin/downloads', app: 'website' },
@@ -52,7 +55,7 @@ const menuItems = computed(() => {
     { name: 'Master Bantuan', icon: FileCheck, to: '/admin/assistance', roles: ['admin', 'penyaluran', 'administrator'], app: 'website' },
     { name: 'Manajemen Permohonan', icon: Inbox, to: '/admin/submissions', roles: ['admin', 'penyaluran', 'administrator'], app: 'website' },
     { name: 'Pesan Masuk', icon: Mail, to: '/admin/messages', app: 'website' },
-    
+
     // --- APP: PORTAL DONASI ---
     { name: 'Manajemen Donasi', icon: Wallet, to: '/admin/donations', roles: ['admin', 'pengumpulan', 'administrator'], app: 'donasi', groupHeader: 'Transaksi' },
     { name: 'Kategori & Program', icon: Megaphone, to: '/admin/campaigns', roles: ['admin', 'pengumpulan', 'administrator'], app: 'donasi', groupHeader: 'Master Data' },
@@ -89,7 +92,7 @@ const lastNotif = reactive({
 const checkNotifications = async () => {
   try {
     const data = await $fetch('/api/v1/notifications/check')
-    
+
     // Check for new message
     if (lastNotif.messageId > 0 && data.lastMessageId > lastNotif.messageId) {
       playNotificationSound()
@@ -137,16 +140,16 @@ const checkNotifications = async () => {
 const playNotificationSound = () => {
   const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
   audio.volume = 0.5
-  audio.play().catch(() => {})
+  audio.play().catch(() => { })
 }
 
 onMounted(() => {
   // Initialize from API first without showing notif
   checkNotifications()
-  
+
   // Start polling every 15 seconds
   const timer = setInterval(checkNotifications, 15000)
-  
+
   onUnmounted(() => clearInterval(timer))
 })
 
@@ -155,15 +158,14 @@ onMounted(() => {
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-emerald-500/30">
     <!-- Sidebar -->
-    <aside 
-      :class="[
-        'fixed left-0 top-0 h-full bg-[#01803d] text-white transition-all duration-300 z-50 shadow-2xl',
-        isSidebarOpen ? 'w-64' : 'w-20'
-      ]"
-    >
+    <aside :class="[
+      'fixed left-0 top-0 h-full bg-[#01803d] text-white transition-all duration-300 z-50 shadow-2xl',
+      isSidebarOpen ? 'w-64' : 'w-20'
+]">
       <div class="p-6 flex items-center gap-3 border-b border-white/10 mb-6 h-16 bg-[#016932]">
         <div class="w-8 h-8 bg-white rounded-sm flex items-center justify-center shadow-lg shrink-0 overflow-hidden">
-          <img v-if="settings.site_logo" :src="settings.site_logo" class="w-full h-full object-contain p-1" alt="Logo" />
+          <img v-if="settings.site_logo" :src="settings.site_logo" class="w-full h-full object-contain p-1"
+            alt="Logo" />
           <span v-else class="font-bold text-emerald-800 text-sm">B</span>
         </div>
         <span v-if="isSidebarOpen" class="font-bold text-xs tracking-tight text-white truncate uppercase">
@@ -174,16 +176,14 @@ onMounted(() => {
       <nav class="px-2 space-y-1 overflow-y-auto h-[calc(100vh-80px)] custom-scrollbar">
         <template v-for="(item, index) in menuItems" :key="item.name">
           <!-- Label Grup untuk Navigasi Tertentu -->
-          <div v-if="item.groupHeader && isSidebarOpen" class="pt-4 pb-2 px-3 text-[9px] font-black text-emerald-200/50 uppercase tracking-[0.2em]">
+          <div v-if="item.groupHeader && isSidebarOpen"
+            class="pt-4 pb-2 px-3 text-[9px] font-black text-emerald-200/50 uppercase tracking-[0.2em]">
             {{ item.groupHeader }}
           </div>
 
-          <NuxtLink 
-            :to="item.to"
-            :exact="item.exact === true"
+          <NuxtLink :to="item.to" :exact="item.exact === true"
             class="flex items-center gap-3 px-3 py-3 rounded-sm transition-all duration-200 group hover:bg-yellow-400 hover:text-slate-950"
-            active-class="bg-yellow-400 text-slate-950 font-bold shadow-md"
-          >
+            active-class="bg-yellow-400 text-slate-950 font-bold shadow-md">
             <component :is="item.icon" class="w-5 h-5 shrink-0" />
             <span v-if="isSidebarOpen" class="text-xs font-bold tracking-wide">{{ item.name }}</span>
           </NuxtLink>
@@ -192,36 +192,32 @@ onMounted(() => {
     </aside>
 
     <!-- Main Content -->
-    <main 
-      :class="[
-        'transition-all duration-300 min-h-screen',
-        isSidebarOpen ? 'pl-64' : 'pl-20'
-      ]"
-    >
+    <main :class="[
+      'transition-all duration-300 min-h-screen',
+      isSidebarOpen ? 'pl-64' : 'pl-20'
+]">
       <!-- Header -->
-      <header class="h-16 border-b border-slate-200 bg-white sticky top-0 z-40 flex items-center justify-between px-8 shadow-sm">
+      <header
+        class="h-16 border-b border-slate-200 bg-white sticky top-0 z-40 flex items-center justify-between px-8 shadow-sm">
         <div class="flex items-center gap-4">
-          <button @click="isSidebarOpen = !isSidebarOpen" class="p-2 hover:bg-slate-100 rounded-sm transition-all text-slate-600">
+          <button @click="isSidebarOpen = !isSidebarOpen"
+            class="p-2 hover:bg-slate-100 rounded-sm transition-all text-slate-600">
             <Menu class="w-5 h-5" />
           </button>
-          
+
           <!-- App Switcher Tabs -->
           <div class="hidden sm:flex bg-slate-100 p-1 rounded-sm ml-4">
-            <button 
-              @click="activeApp = 'website'"
-              :class="['px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all', activeApp === 'website' ? 'bg-white text-emerald-800 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-            >
+            <button @click="activeApp = 'website'"
+              :class="['px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all', activeApp === 'website' ? 'bg-white text-emerald-800 shadow-sm' : 'text-slate-500 hover:text-slate-700']">
               Website Utama
             </button>
-            <button 
-              @click="activeApp = 'donasi'"
-              :class="['px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all', activeApp === 'donasi' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-            >
+            <button @click="activeApp = 'donasi'"
+              :class="['px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all', activeApp === 'donasi' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700']">
               Portal Donasi
             </button>
           </div>
         </div>
-        
+
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3 px-4 py-1.5 rounded-sm bg-emerald-50 border border-emerald-100">
             <div class="text-right hidden md:block">
@@ -250,8 +246,9 @@ onMounted(() => {
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 0;
 }
 
