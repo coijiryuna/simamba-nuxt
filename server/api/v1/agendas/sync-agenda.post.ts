@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Parse page and limit from request body if it is a agenda request
-    if (event.node.req.method === "agenda") {
+    if (event.node.req.method === "POST") {
       try {
         const body = await readBody(event);
         if (body) {

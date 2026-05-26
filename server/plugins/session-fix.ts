@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url';
 // where standard Node env loading might not automatically load the .env file.
 function loadEnvFile() {
   const possiblePaths = [
-    path.join(process.cwd(), '.env'),
-    '/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env'
+    path.join(process.cwd(), ".env"),
+    "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
+    // '/home/www/baznas/.env'
   ];
 
   try {
@@ -64,40 +65,35 @@ export default defineNitroPlugin(() => {
 
   // === SESSION FALLBACK ===
   if (!process.env.NUXT_SESSION_PASSWORD) {
-    process.env.NUXT_SESSION_PASSWORD = '23d8427157ff4361a8ee053bf37a57aa';
+    process.env.NUXT_SESSION_PASSWORD = "23d8427157ff4361a8ee053bf37a57aa";
   }
 
   // === MIDTRANS DEFAULT IS_PRODUCTION ===
   if (!process.env.MIDTRANS_IS_PRODUCTION) {
-    process.env.MIDTRANS_IS_PRODUCTION = 'true';
+    process.env.MIDTRANS_IS_PRODUCTION = "true";
   }
 
   // === JWT & SECURITY ===
   if (!process.env.JWT_SECRET_BYZIS) {
-    process.env.JWT_SECRET_BYZIS = 'baznas_tangerang_secret_byzis_2024';
+    process.env.JWT_SECRET_BYZIS = "baznas_tangerang_secret_byzis_2024";
   }
 
   // === CORS ===
   if (!process.env.CORS_ALLOWED_ORIGINS) {
-    process.env.CORS_ALLOWED_ORIGINS = 'https://donasi.baznastangerangkab.or.id,https://baznastangerangkab.or.id';
+    process.env.CORS_ALLOWED_ORIGINS =
+      "https://donasi.baznastangerangkab.or.id,https://baznastangerangkab.or.id";
   }
 
   // === APP URLs ===
   if (!process.env.API_BASE) {
-    process.env.API_BASE = 'https://baznastangerangkab.or.id/api';
+    process.env.API_BASE = "https://baznastangerangkab.or.id/api";
   }
   if (!process.env.DONASI_BASE) {
-    process.env.DONASI_BASE = 'https://donasi.baznastangerangkab.or.id';
+    process.env.DONASI_BASE = "https://donasi.baznastangerangkab.or.id";
   }
 
-  // Google id
-  if(!process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID) {
-    process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID';
-  }
-  if(!process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET) {
-    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
-  }
-
-  console.log('[env-fix] Dynamic environment variables verified and applied successfully.');
+  console.log(
+    "[env-fix] Dynamic environment variables verified and applied successfully.",
+  );
 });
 

@@ -20,8 +20,6 @@ export default defineNuxtConfig({
     },
   },
 
-
-
   css: ["~/assets/css/main.css"],
 
   // Tailwind 4 setup via PostCSS
@@ -43,12 +41,15 @@ export default defineNuxtConfig({
 
   // Percaya header dari Nginx reverse proxy (penting untuk HTTPS di produksi)
   nitro: {
-    preset: 'node-server',
+    preset: "node-server",
+    // Development-only: debug trusted proxies
+    logLevel: process.env.NODE_ENV === "development" ? 4 : 3,
   },
 
   runtimeConfig: {
     // Session password untuk nuxt-auth-utils
-    sessionPassword: process.env.NUXT_SESSION_PASSWORD || "23d8427157ff4361a8ee053bf37a57aa",
+    sessionPassword:
+      process.env.NUXT_SESSION_PASSWORD || "23d8427157ff4361a8ee053bf37a57aa",
 
     // SIMBA API
     simbaUrl: process.env.SIMBA_URL,
@@ -73,10 +74,10 @@ export default defineNuxtConfig({
     googleClientSecret: process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET,
 
     // Upload Directory
-    uploadDir: process.env.UPLOAD_DIR || '',
+    uploadDir: process.env.UPLOAD_DIR || "",
 
     // Midtrans
-    midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
+    midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
     midtransClientKey: process.env.MIDTRANS_CLIENT_KEY,
     midtransServerKey: process.env.MIDTRANS_SERVER_KEY,
 
@@ -86,7 +87,8 @@ export default defineNuxtConfig({
 
     public: {
       apiBase: process.env.API_BASE || "/api",
-      donasiBase: process.env.DONASI_BASE || "https://donasi.baznastangerangkab.or.id",
+      donasiBase:
+        process.env.DONASI_BASE || "https://donasi.baznastangerangkab.or.id",
     },
   },
   vite: {

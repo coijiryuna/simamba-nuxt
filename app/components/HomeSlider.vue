@@ -44,8 +44,8 @@ const modules = [Autoplay, Pagination, Navigation];
 
 <style scoped>
 :deep(.swiper-pagination-bullet) {
-  background: white;
-  opacity: 0.5;
+  background: #01803d;
+    opacity: 0.5;
   width: 12px;
   height: 4px;
   border-radius: 2px;
@@ -58,11 +58,12 @@ const modules = [Autoplay, Pagination, Navigation];
 }
 :deep(.swiper-button-next), :deep(.swiper-button-prev) {
   color: #fecb00;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+    height: 40px;
   background: rgba(1, 42, 20, 0.5);
   backdrop-filter: blur(8px);
-  border-radius: 2px;
+  border-radius: 50%;
+    position: absolute;
   transition: all 0.3s;
   opacity: 0;
 }
@@ -75,7 +76,7 @@ const modules = [Autoplay, Pagination, Navigation];
   color: white;
 }
 :deep(.swiper-button-next::after), :deep(.swiper-button-prev::after) {
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 900;
 }
 </style>
