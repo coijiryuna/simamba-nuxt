@@ -123,10 +123,11 @@ watch(isOpen, (val) => {
 </script>
 
 <template>
-  <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+  <div class="fixed bottom-6 right-6 z-100 flex flex-col items-end">
     <!-- Chat Window -->
     <Transition name="slide-up">
-      <div v-if="isOpen" class="mb-4 w-[350px] md:w-[400px] h-[500px] bg-white rounded-sm shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+      <div v-if="isOpen"
+        class="mb-4 w-87.5 md:w-100 h-125 md:h-150 bg-white rounded-sm shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
         <!-- Header -->
         <div class="bg-[#01803d] p-6 text-white flex justify-between items-center shadow-lg">
           <div class="flex items-center gap-3">

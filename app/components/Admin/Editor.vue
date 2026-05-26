@@ -202,7 +202,7 @@ const colors = [
           <Type class="w-4 h-4" />
           <span class="text-[9px] font-black uppercase tracking-widest">Size</span>
         </div>
-        <div class="absolute top-full left-0 mt-1 bg-white border border-slate-200 shadow-xl rounded-sm py-1 hidden group-hover:block z-50 min-w-[120px]">
+        <div class="absolute top-full left-0 mt-1 bg-white border border-slate-200 shadow-xl rounded-sm py-1 hidden group-hover:block z-50 min-w-30">
           <button 
             v-for="s in fontSizes" :key="s.value"
             @click="setFontSize(s.value)"
@@ -259,7 +259,7 @@ const colors = [
     </div>
 
     <!-- Editor Body -->
-    <EditorContent :editor="editor" class="editor-content p-6 min-h-[400px] outline-none prose prose-slate max-w-none prose-emerald" />
+    <EditorContent :editor="editor" class="editor-content p-6 min-h-100 outline-none prose prose-slate max-w-none prose-emerald" />
   </div>
 </template>
 

@@ -225,7 +225,7 @@ const counts = computed(() => {
     </div>
 
     <!-- Data Table -->
-    <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden relative min-h-[400px]">
+    <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden relative min-h-100">
       <div v-if="pending"
         class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
         <div class="flex flex-col items-center gap-3">

@@ -27,13 +27,13 @@ const modules = [Autoplay, Pagination, Navigation];
       }"
       :pagination="{ clickable: true }"
       :navigation="true"
-      class="h-[300px] md:h-[600px]"
+class="h-75 md:h-150"
     >
       <swiper-slide v-for="slider in data.data" :key="slider.id">
         <div class="relative w-full h-full ">
           <img 
             :src="slider.image_url || slider.image || 'https://via.placeholder.com/1600x800?text=Baznas+Slider'" 
-            class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-[2000ms]"
+           class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-20000 ease-in-out"
             alt="Slider Image"
           />
         </div>

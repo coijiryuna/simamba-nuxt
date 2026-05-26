@@ -62,11 +62,11 @@ useSeoMeta({
       
       <!-- Quick Stats -->
       <div class="flex gap-4">
-        <div class="bg-[#01803d] text-center p-4 rounded-sm text-white shadow-xl shadow-emerald-900/10 min-w-[140px]">
+        <div class="bg-[#01803d] text-center p-4 rounded-sm text-white shadow-xl shadow-emerald-900/10 min-w-35">
           <p class="text-[8px] font-black uppercase tracking-widest text-emerald-300 mb-1">Total Program</p>
           <p class="text-4xl text-center font-black ">{{ campaigns?.length || 0 }}</p>
         </div>
-        <div class="bg-white text-center p-4 rounded-sm border border-slate-100 shadow-xl shadow-slate-200/50 min-w-[140px]">
+        <div class="bg-white text-center p-4 rounded-sm border border-slate-100 shadow-xl shadow-slate-200/50 min-w-35">
           <p class="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Status</p>
           <p class="text-2xl text-center font-black text-[#01803d]">Aktif</p>
         </div>
@@ -99,7 +99,7 @@ useSeoMeta({
 
     <!-- Campaigns Grid -->
     <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div v-for="i in 6" :key="i" class="bg-white rounded-sm h-[400px] animate-pulse border border-slate-100"></div>
+      <div v-for="i in 6" :key="i" class="bg-white rounded-sm h-100 animate-pulse border border-slate-100"></div>
     </div>
 
     <div v-else-if="filteredCampaigns.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -114,7 +114,7 @@ useSeoMeta({
             :src="campaign.cover_image_url || 'https://via.placeholder.com/600x400?text=BAZNAS+Program'" 
             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+          <div class="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
           
           <div class="absolute top-4 left-4">
             <span class="px-3 py-1 bg-[#fecb00] text-slate-900 text-[8px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
@@ -125,7 +125,7 @@ useSeoMeta({
 
         <!-- Content Area -->
         <div class="p-6 flex-1 flex flex-col">
-          <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight leading-snug mb-4 line-clamp-2 min-h-[40px] group-hover:text-[#01803d] transition-colors italic">
+          <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight leading-snug mb-4 line-clamp-2 min-h-10 group-hover:text-[#01803d] transition-colors italic">
             {{ campaign.title }}
           </h3>
 
@@ -139,7 +139,7 @@ useSeoMeta({
             </div>
             <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div 
-                class="h-full bg-gradient-to-r from-[#01803d] to-emerald-400 transition-all duration-1000"
+                class="h-full bg-linear-to-r from-[#01803d] to-emerald-400 transition-all duration-1000"
                 :style="{ width: `${calculateProgress(campaign.current_amount, campaign.target_amount)}%` }"
               ></div>
             </div>
