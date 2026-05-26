@@ -249,7 +249,7 @@ const counts = computed(() => {
           <tr v-for="post in postsData?.data" :key="post.ID" class="hover:bg-emerald-50/20 transition-all group">
             <td class="px-6 py-5">
               <div class="flex gap-4 items-start">
-                <div class="w-12 h-12 bg-slate-100 rounded-sm border border-slate-200 flex-shrink-0 overflow-hidden">
+                <div class="w-12 h-12 bg-slate-100 rounded-sm border border-slate-200 shrink-0 overflow-hidden">
                   <img v-if="post.featured_image_url" :src="post.featured_image_url"
                     class="w-full h-full object-cover" />
                   <div v-else class="w-full h-full flex items-center justify-center">
