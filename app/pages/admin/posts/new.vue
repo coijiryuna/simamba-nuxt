@@ -8,7 +8,8 @@ import {
   Save, 
   Image as ImageIcon, 
   X,
-  Upload
+  Upload,
+  Plus
 } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
 
@@ -24,10 +25,12 @@ const form = reactive({
   post_type: type,
   categories: [],
   tags: '',
-  featured_image: null
+  featured_image: null,
+  post_images: [],
 })
 
 const imagePreview = ref(null)
+const postPreviews = ref([])
 
 // Load Categories
 const { data: categories } = await useFetch('/api/v1/categories')
@@ -39,6 +42,19 @@ const onFileChange = (e) => {
     form.featured_image = file
     imagePreview.value = URL.createObjectURL(file)
   }
+}
+// Handle Gallery Changes (Multi-upload)
+const onGalleryChange = (e) => {
+  const files = Array.from(e.target.files)
+  files.forEach(file => {
+    form.post_images.push(file)
+    postPreviews.value.push(URL.createObjectURL(file))
+  })
+  e.target.value = '' // Reset input agar bisa pilih file yang sama jika dihapus
+}
+const removeGalleryImage = (index) => {
+  form.post_images.splice(index, 1)
+  postPreviews.value.splice(index, 1)
 }
 
 // Submit Form
@@ -60,7 +76,10 @@ const submit = async () => {
   if (form.featured_image) {
     formData.append('featured_image', form.featured_image)
   }
-
+  // Masukkan semua file galeri ke FormData
+  form.post_images.forEach((file) => {
+    formData.append('post_images', file)
+  })
   try {
     await $fetch('/api/v1/posts', {
       method: 'POST',
@@ -216,6 +235,44 @@ const submit = async () => {
               />
               <Upload class="w-8 h-8 text-slate-300 mx-auto mb-2 group-hover:text-emerald-500" />
               <p class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 uppercase tracking-widest">Klik untuk Upload</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Galeri Foto Dinamis -->
+        <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+          <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+            <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Galeri Foto Berita
+            </h3>
+            <label
+              class="cursor-pointer bg-emerald-100 text-emerald-700 p-1.5 rounded-sm hover:bg-emerald-200 transition-colors shadow-sm">
+              <Plus class="w-3 h-3" />
+              <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+            </label>
+          </div>
+          <div class="p-4">
+            <div v-if="postPreviews.length > 0" class="grid grid-cols-3 gap-2">
+              <div v-for="(prev, idx) in postPreviews" :key="idx" class="relative group aspect-square">
+                <img :src="prev" class="w-full h-full object-cover rounded-sm border border-slate-100 shadow-xs" />
+                <button @click="removeGalleryImage(idx)" type="button"
+                  class="absolute -top-1 -right-1 p-1 bg-red-600 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <X class="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <!-- Tombol tambah kecil di dalam grid -->
+              <label
+                class="border-2 border-dashed border-slate-100 rounded-sm flex items-center justify-center cursor-pointer hover:border-emerald-300 hover:bg-emerald-50 transition-all aspect-square">
+                <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+                <Plus class="w-5 h-5 text-slate-300" />
+              </label>
+            </div>
+            <div v-else class="text-center py-8 border-2 border-dashed border-slate-100 rounded-sm bg-slate-50/50">
+              <label class="cursor-pointer group block">
+                <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+                <ImageIcon class="w-8 h-8 text-slate-200 mx-auto mb-2 group-hover:text-emerald-400 transition-colors" />
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-emerald-600">
+                  Tambah Galeri</p>
+              </label>
             </div>
           </div>
         </div>

@@ -43,7 +43,7 @@ const loginWithGoogle = async () => {
 
 <template>
   <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4 selection:bg-emerald-500/30 font-sans">
-    <div class="w-full max-w-[400px]">
+    <div class="w-full max-w-100">
       <!-- Logo & Branding -->
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-[#01803d] rounded-sm shadow-2xl mb-6 rotate-3">

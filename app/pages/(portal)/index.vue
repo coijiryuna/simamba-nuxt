@@ -25,14 +25,14 @@ const { data: homeData, pending } = useAsyncData('home-data', async () => {
     $fetch('/api/v1/gallery'),
     $fetch('/api/sliders')
   ])
-  return { 
-    posts: postsRes?.data || [], 
+  return {
+    posts: postsRes?.data || [],
     articles: articlesRes?.data || [],
     programs: programsRes?.data || [],
-    campaigns, 
-    stats, 
-    gallery, 
-    sliders 
+    campaigns,
+    stats,
+    gallery,
+    sliders
   }
 }, { lazy: true })
 
@@ -68,7 +68,8 @@ const formatDate = (dateString) => {
   <div class="portal-home space-y-24 pb-24">
     <!-- HERO SECTION (SLIDER) -->
     <section class="-mx-4 lg:-mx-2 reveal relative z-0">
-      <div v-if="pending && !sliders.data?.length" class="h-[300px] md:h-[600px] bg-slate-100 animate-pulse flex items-center justify-center">
+      <div v-if="pending && !sliders.data?.length"
+        class="h-[300px] md:h-[600px] bg-slate-100 animate-pulse flex items-center justify-center">
         <div class="text-slate-300 font-black uppercase tracking-[0.5em]">BAZNAS TANGERANG</div>
       </div>
       <HomeSlider v-else :data="sliders" />
@@ -81,21 +82,37 @@ const formatDate = (dateString) => {
           <div v-for="i in 4" :key="i" class="h-32 bg-slate-50 border border-slate-100 rounded-sm animate-pulse"></div>
         </template>
         <template v-else>
-          <div class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-emerald-500 hover:-translate-y-1 transition-all duration-500 group">
-            <div class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-emerald-500 transition-colors">Dana Terkumpul</div>
-            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ formatCurrency(statsData.total_donasi) }}</div>
+          <div
+            class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-emerald-500 hover:-translate-y-1 transition-all duration-500 group">
+            <div
+              class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-emerald-500 transition-colors">
+              Dana Terkumpul</div>
+            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{
+              formatCurrency(statsData.total_donasi) }}</div>
           </div>
-          <div class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-[#fecb00] hover:-translate-y-1 transition-all duration-500 group">
-            <div class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-yellow-600 transition-colors">Muzakki</div>
-            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ statsData.total_muzakki }}</div>
+          <div
+            class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-[#fecb00] hover:-translate-y-1 transition-all duration-500 group">
+            <div
+              class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-yellow-600 transition-colors">
+              Muzakki</div>
+            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ statsData.total_muzakki }}
+            </div>
           </div>
-          <div class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-emerald-500 hover:-translate-y-1 transition-all duration-500 group">
-            <div class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-emerald-500 transition-colors">Penyaluran</div>
-            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ formatCurrency(statsData.total_penyaluran) }}</div>
+          <div
+            class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-emerald-500 hover:-translate-y-1 transition-all duration-500 group">
+            <div
+              class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-emerald-500 transition-colors">
+              Penyaluran</div>
+            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{
+              formatCurrency(statsData.total_penyaluran) }}</div>
           </div>
-          <div class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-[#fecb00] hover:-translate-y-1 transition-all duration-500 group">
-            <div class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-yellow-600 transition-colors">Mustahik</div>
-            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ statsData.total_mustahik }}</div>
+          <div
+            class="bg-white p-8 rounded-sm shadow-xl border-b-4 border-[#fecb00] hover:-translate-y-1 transition-all duration-500 group">
+            <div
+              class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-yellow-600 transition-colors">
+              Mustahik</div>
+            <div class="text-xl md:text-3xl font-black text-slate-800 tracking-tighter">{{ statsData.total_mustahik }}
+            </div>
           </div>
         </template>
       </div>
@@ -105,10 +122,16 @@ const formatDate = (dateString) => {
     <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
       <div class="flex items-end justify-between border-b border-slate-100 pb-6">
         <div class="space-y-2">
-          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Program Unggulan</h2>
-          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Bantu Sesama Melalui Program BAZNAS</p>
+          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Program
+            Unggulan
+          </h2>
+          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Bantu Sesama Melalui
+            Program
+            BAZNAS</p>
         </div>
-        <a :href="`${donasiurl}/campaigns`" class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat Semua</a>
+        <a :href="`${donasiurl}/campaigns`"
+          class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat
+          Semua</a>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -120,31 +143,37 @@ const formatDate = (dateString) => {
           </div>
         </template>
         <template v-else>
-          <div v-for="campaign in campaigns" :key="campaign.id" class="bg-white rounded-sm overflow-hidden shadow-lg border border-slate-100 group flex flex-col h-full hover:shadow-2xl transition-all duration-500">
-            <div class="relative h-56 overflow-hidden bg-slate-100">
-              <img :src="campaign.cover_image_url || campaign.image || 'https://via.placeholder.com/600x400?text=Baznas+Campaign'" 
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                   :alt="campaign.title"
-                   loading="lazy">
-              <div class="absolute top-4 left-4 bg-[#01803d] text-white px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-sm shadow-lg">
+          <div v-for="campaign in campaigns" :key="campaign.id"
+            class="bg-white rounded-sm overflow-hidden shadow-lg border border-slate-100 group flex flex-col h-auto hover:shadow-2xl transition-all duration-500">
+            <div class="relative h-auto overflow-hidden bg-slate-100">
+              <img
+                :src="campaign.cover_image_url || campaign.image || 'https://via.placeholder.com/600x400?text=Baznas+Campaign'"
+                class="w-auto h-auto object-cover group-hover:scale-110 transition-transform duration-700"
+                :alt="campaign.title" loading="lazy">
+              <div
+                class="absolute top-4 left-4 bg-[#01803d] text-white px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-sm shadow-lg">
                 {{ campaign.category_name }}
               </div>
             </div>
             <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
               <div class="space-y-4">
-                <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2 leading-tight min-h-[2.5rem]">{{ campaign.title }}</h3>
+                <h3
+                  class="text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2 leading-tight min-h-[2.5rem]">
+                  {{ campaign.title }}</h3>
                 <div class="space-y-2">
                   <div class="flex justify-between text-[10px] font-black uppercase tracking-tighter">
                     <span class="text-slate-400">Terkumpul</span>
                     <span class="text-emerald-600">{{ formatCurrency(campaign.current_amount) }}</span>
                   </div>
                   <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" :style="{ width: calculateProgress(campaign.current_amount, campaign.target_amount) + '%' }"></div>
+                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000"
+                      :style="{ width: calculateProgress(campaign.current_amount, campaign.target_amount) + '%' }">
+                    </div>
                   </div>
                 </div>
               </div>
-              <a :href="`${donasiurl}/campaigns/${campaign.slug}`" 
-                 class="block w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-center py-4 rounded-sm font-black text-[10px] uppercase tracking-widest shadow-md transition-all border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1 mt-6">
+              <a :href="`${donasiurl}/campaigns/${campaign.slug}`"
+                class="block w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-center py-4 rounded-sm font-black text-[10px] uppercase tracking-widest shadow-md transition-all border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1 mt-6">
                 Donasi Sekarang
               </a>
             </div>
@@ -157,10 +186,16 @@ const formatDate = (dateString) => {
     <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
       <div class="flex items-end justify-between border-b border-slate-100 pb-6">
         <div class="space-y-2">
-          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Berita Terkini</h2>
-          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Kabar Terbaru & Informasi Zakat</p>
+          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Berita
+            Terkini
+          </h2>
+          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Kabar Terbaru &
+            Informasi
+            Zakat</p>
         </div>
-        <NuxtLink to="/berita" class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat Semua</NuxtLink>
+        <NuxtLink to="/berita"
+          class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">
+          Lihat Semua</NuxtLink>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -173,20 +208,31 @@ const formatDate = (dateString) => {
         </template>
         <template v-else>
           <article v-for="post in posts" :key="post.ID" class="flex flex-col space-y-4 group">
-            <div class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
-              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+News'" 
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                   :alt="post.post_title"
-                   loading="lazy">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div
+              class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
+              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+News'"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                :alt="post.post_title" loading="lazy">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              </div>
             </div>
             <div class="space-y-2">
-              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{ formatDate(post.post_date) }}</div>
-              <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">{{ post.post_title }}</h3>
-              <p class="text-[10px] text-slate-500 line-clamp-2 leading-relaxed font-bold" v-html="post.post_content"></p>
-              <NuxtLink :to="`/berita/${post.slug}`" class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
+              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{
+                formatDate(post.post_date) }}</div>
+              <NuxtLink :to="`/berita/${post.slug}`">
+                <h3
+                  class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">
+                  {{ post.post_title }}
+                </h3>
+              </NuxtLink>
+              <p class="text-[10px] text-slate-500 line-clamp-2 leading-relaxed font-bold" v-html="post.post_content">
+              </p>
+              <NuxtLink :to="`/berita/${post.slug}`"
+                class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
                 Baca Selengkapnya
-                <span class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
+                <span
+                  class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
               </NuxtLink>
             </div>
           </article>
@@ -198,10 +244,16 @@ const formatDate = (dateString) => {
     <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
       <div class="flex items-end justify-between border-b border-slate-100 pb-6">
         <div class="space-y-2">
-          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Program Kerja</h2>
-          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Aksi Nyata BAZNAS Untuk Umat</p>
+          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Program
+            Kerja
+          </h2>
+          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Aksi Nyata BAZNAS Untuk
+            Umat
+          </p>
         </div>
-        <NuxtLink to="/program" class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat Semua</NuxtLink>
+        <NuxtLink to="/program"
+          class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">
+          Lihat Semua</NuxtLink>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -213,18 +265,26 @@ const formatDate = (dateString) => {
         </template>
         <template v-else>
           <article v-for="post in programs" :key="post.ID" class="flex flex-col space-y-4 group">
-            <div class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
-              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+Program'" 
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                   :alt="post.post_title"
-                   loading="lazy">
+            <div
+              class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
+              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+Program'"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                :alt="post.post_title" loading="lazy">
             </div>
             <div class="space-y-2">
-              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{ formatDate(post.post_date) }}</div>
-              <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">{{ post.post_title }}</h3>
-              <NuxtLink :to="`/berita/${post.slug}`" class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
+              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{
+                formatDate(post.post_date) }}</div>
+              <NuxtLink :to="`/berita/${post.slug}`">
+                <h3
+                  class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">
+                  {{ post.post_title }}</h3>
+              </NuxtLink>
+
+              <NuxtLink :to="`/berita/${post.slug}`"
+                class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
                 Detail Program
-                <span class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
+                <span
+                  class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
               </NuxtLink>
             </div>
           </article>
@@ -236,33 +296,46 @@ const formatDate = (dateString) => {
     <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
       <div class="flex items-end justify-between border-b border-slate-100 pb-6">
         <div class="space-y-2">
-          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Artikel Pilihan</h2>
-          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Wawasan & Edukasi Keislaman</p>
+          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Artikel
+            Pilihan
+          </h2>
+          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Wawasan & Edukasi
+            Keislaman
+          </p>
         </div>
-        <NuxtLink to="/artikel" class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat Semua</NuxtLink>
+        <NuxtLink to="/artikel"
+          class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">
+          Lihat Semua</NuxtLink>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <template v-if="pending && !articles.length">
-          <div v-for="i in 5" :key="i" class="space-y-4">
+          <div v-for="i in 4" :key="i" class="space-y-4">
             <div class="aspect-video bg-slate-100 animate-pulse rounded-sm"></div>
             <div class="h-4 bg-slate-100 animate-pulse w-full rounded-sm"></div>
           </div>
         </template>
         <template v-else>
           <article v-for="post in articles" :key="post.ID" class="flex flex-col space-y-4 group">
-            <div class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
-              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+Article'" 
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                   :alt="post.post_title"
-                   loading="lazy">
+            <div
+              class="aspect-video bg-slate-100 rounded-sm overflow-hidden border border-slate-100 shadow-sm relative">
+              <img :src="post.featured_image_url || 'https://via.placeholder.com/800x450?text=Baznas+Article'"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                :alt="post.post_title" loading="lazy">
             </div>
             <div class="space-y-2">
-              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{ formatDate(post.post_date) }}</div>
-              <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">{{ post.post_title }}</h3>
-              <NuxtLink :to="`/berita/${post.slug}`" class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
+              <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{{
+                formatDate(post.post_date) }}</div>
+              <NuxtLink :to="`/artikel/${post.slug}`">
+                <h3
+                  class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight h-10">
+                  {{ post.post_title }}</h3>
+              </NuxtLink>
+              <NuxtLink :to="`/artikel/${post.slug}`"
+                class="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all pt-2 group/link">
                 Baca Artikel
-                <span class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
+                <span
+                  class="w-4 h-0.5 bg-slate-200 group-hover/link:w-8 group-hover/link:bg-emerald-500 transition-all"></span>
               </NuxtLink>
             </div>
           </article>
@@ -271,29 +344,30 @@ const formatDate = (dateString) => {
     </section>
 
     <!-- GALLERY SECTION -->
-    <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
-      <div class="flex items-end justify-between border-b border-slate-100 pb-6 relative z-10">
-        <div class="space-y-2">
-          <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Galeri Kegiatan</h2>
-          <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Dokumentasi Penyaluran & Aktivitas</p>
-        </div>
-        <NuxtLink to="/galeri" class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">Lihat Semua</NuxtLink>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
-        <template v-if="pending && !gallery.length">
-          <div v-for="i in 4" :key="i" class="aspect-square bg-slate-100 animate-pulse rounded-sm"></div>
-        </template>
-        <template v-else>
-          <div v-for="(item, index) in gallery.slice(0, 4)" :key="index" class="aspect-square bg-slate-800 rounded-sm overflow-hidden group cursor-pointer border border-white/5 shadow-lg">
-            <img :src="item.image_url || item.image || 'https://via.placeholder.com/400x400?text=Baznas+Gallery'" 
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-70 group-hover:opacity-100" 
-                 :alt="item.title"
-                 loading="lazy">
+    <template v-if="pending && !gallery.length">
+      <section class="max-w-7xl mx-auto px-4 space-y-8 reveal">
+        <div class="flex items-end justify-between border-b border-slate-100 pb-6 relative z-10">
+          <div class="space-y-2">
+            <h2 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none">Galeri
+              Kegiatan</h2>
+            <p class="text-[8px] md:text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Dokumentasi Penyaluran
+              & Aktivitas</p>
           </div>
-        </template>
-      </div>
-    </section>
+          <NuxtLink to="/galeri"
+            class="text-[10px] md:text-sm font-black text-[#01803d] uppercase tracking-widest hover:tracking-[0.2em] transition-all duration-300">
+            Lihat Semua</NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+          <div v-for="(item, index) in gallery.slice(0, 4)" :key="index"
+            class="aspect-square bg-slate-800 rounded-sm overflow-hidden group cursor-pointer border border-white/5 shadow-lg">
+            <img :src="item.image_url || item.image || 'https://via.placeholder.com/400x400?text=Baznas+Gallery'"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-70 group-hover:opacity-100"
+              :alt="item.title" loading="lazy">
+          </div>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
@@ -303,8 +377,15 @@ const formatDate = (dateString) => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Reveal on scroll basic style */
@@ -336,8 +417,19 @@ const formatDate = (dateString) => {
 }
 
 /* Staggering delays for better feel */
-section:nth-child(2) { animation-delay: 0.3s; }
-section:nth-child(3) { animation-delay: 0.4s; }
-section:nth-child(4) { animation-delay: 0.5s; }
-section:nth-child(5) { animation-delay: 0.6s; }
+section:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+section:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+section:nth-child(4) {
+  animation-delay: 0.5s;
+}
+
+section:nth-child(5) {
+  animation-delay: 0.6s;
+}
 </style>

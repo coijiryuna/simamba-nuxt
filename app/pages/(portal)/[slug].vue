@@ -75,7 +75,9 @@ useSeoMeta({
           </div>
 
           <div v-if="fallbackPost.featured_image_url" class="rounded-sm overflow-hidden shadow-2xl border border-slate-100 group">
-            <img :src="fallbackPost.featured_image_url" class="w-full h-auto group-hover:scale-105 transition-transform duration-1000" :alt="fallbackPost.post_title" />
+            <img :src="fallbackPost.featured_image_url"
+              class="w-auto h-auto group-hover:scale-105 transition-transform duration-1000"
+              :alt="fallbackPost.post_title" />
           </div>
 
           <div 

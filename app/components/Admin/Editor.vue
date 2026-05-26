@@ -265,7 +265,7 @@ const colors = [
 
 <style scoped>
 .editor-content :deep(.tiptap) {
-  min-height: 400px;
+  min-height: 950px;
   outline: none;
 }
 

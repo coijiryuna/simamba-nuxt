@@ -90,6 +90,14 @@ export default defineNitroPlugin(() => {
     process.env.DONASI_BASE = 'https://donasi.baznastangerangkab.or.id';
   }
 
+  // Google id
+  if(!process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID) {
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID';
+  }
+  if(!process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET) {
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
+  }
+
   console.log('[env-fix] Dynamic environment variables verified and applied successfully.');
 });
 

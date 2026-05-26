@@ -22,6 +22,71 @@ import Swal from 'sweetalert2'
 const search = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
+const syncing = ref(false)
+
+const syncSimba = async () => {
+    const { value: formValues } = await Swal.fire({
+        title: 'Sinkronisasi SIMBA',
+        html: `
+      <div class="flex flex-col gap-4 text-left p-2">
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Halaman (hal)</label>
+          <input id="swal-input-page" type="number" min="1" value="1" class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 px-3 text-sm outline-none focus:border-emerald-600 focus:bg-white transition-all text-slate-800 font-bold" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Limit per Halaman</label>
+          <input id="swal-input-limit" type="number" min="1" max="100" value="20" class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 px-3 text-sm outline-none focus:border-emerald-600 focus:bg-white transition-all text-slate-800 font-bold" />
+        </div>
+      </div>
+    `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonColor: '#047857',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Mulai Sinkronisasi',
+        cancelButtonText: 'Batal',
+        preConfirm: () => {
+            const pageInput = document.getElementById('swal-input-page')
+            const limitInput = document.getElementById('swal-input-limit')
+            const page = pageInput ? parseInt(pageInput.value, 10) : 1
+            const limit = limitInput ? parseInt(limitInput.value, 10) : 20
+
+            if (isNaN(page) || page < 1) {
+                Swal.showValidationMessage('Halaman harus minimal 1')
+                return false
+            }
+            if (isNaN(limit) || limit < 1) {
+                Swal.showValidationMessage('Limit harus minimal 1')
+                return false
+            }
+            return { page, limit }
+        }
+    })
+
+    if (!formValues) return
+
+    syncing.value = true
+    try {
+        const response = await $fetch('/api/v1/agendas/sync-agenda', {
+            method: 'POST',
+            body: {
+                page: formValues.page,
+                limit: formValues.limit
+            }
+        })
+        refresh()
+        Swal.fire({
+            icon: 'success',
+            title: 'Sinkronisasi Selesai!',
+            text: `${response.syncedCount} agenda baru berhasil disinkronkan dari SIMBA.`,
+            confirmButtonColor: '#047857',
+        })
+    } catch (e) {
+        Swal.fire('Gagal!', e.data?.message || 'Gagal menyinkronkan agenda dari SIMBA.', 'error')
+    } finally {
+        syncing.value = false
+    }
+}
 
 const { data: agendasData, pending, refresh } = await useFetch('/api/v1/agendas', {
     query: computed(() => ({
@@ -87,7 +152,11 @@ const deleteAgenda = async (id) => {
                 <p class="text-sm text-slate-500 font-medium">Kelola agenda dan kegiatan yang akan dilaksanakan.</p>
             </div>
             <div class="flex items-center gap-3">
-
+                <button @click="syncSimba" :disabled="syncing"
+                    class="flex items-center gap-2 bg-emerald-700 text-white px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-emerald-800 disabled:bg-emerald-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                    <RefreshCw :class="{ 'animate-spin': syncing }" class="w-4 h-4" />
+                    {{ syncing ? 'Syncing...' : 'Sync SIMBA' }}
+                </button>
                 <NuxtLink to="/admin/agendas/new"
                     class="flex items-center gap-2 bg-[#fecb00] text-slate-900 px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-500/20 active:scale-95">
                     <Plus class="w-4 h-4" />

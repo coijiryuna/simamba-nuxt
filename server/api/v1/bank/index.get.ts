@@ -23,12 +23,21 @@ ORDER BY p.ID DESC
 LIMIT ? OFFSET ?
         `;
     }
-    const params: any[] = search ? [`%${search}%`, `%${search}%`, `%${search}%`, limit, offset] : [limit, offset];
+    const params: any[] = search
+      ? [`%${search}%`, `%${search}%`, `%${search}%`, limit, offset]
+      : [limit, offset];
     const [rows] = await db.query(slq, params);
+    let countSql = `SELECT COUNT(DISTINCT p.ID) as total FROM tbl_bank p`;
+    const [countRows] = (await db.query(
+      countSql,
+      params.slice(0, params.length - 2),
+    )) as any[]; // remove limit and offset
+    const total = countRows[0].total;
 
     return {
       page,
       limit,
+      total,
       data: rows,
     };
   } catch (error) {

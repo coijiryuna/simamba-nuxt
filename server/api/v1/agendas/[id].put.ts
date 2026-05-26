@@ -9,11 +9,15 @@ export default defineEventHandler(async (event) => {
 
   const getField = (name: string) => formData.find(f => f.name === name)?.data.toString();
   const getFile = (name: string) => formData.find(f => f.name === name);
+  const getFiles = (name: string) => formData.filter(f => f.name === name);
 
   const title = getField('agenda_title');
   const content = getField('agenda_content');
   const status = getField('agenda_status');
+  const agendaType = getField('agenda_type');
   const featuredImage = getFile('featured_image');
+  const existingGalleriesRaw = getField('existing_galleries');
+  const newGalleryFiles = getFiles('gallery_images');
 
   try {
     // 1. Update basic data
@@ -38,6 +42,10 @@ export default defineEventHandler(async (event) => {
       sql += ', agenda_status = ?';
       params.push(status);
     }
+    if (agendaType) {
+      sql += ', agenda_type = ?';
+      params.push(agendaType);
+    }
 
     // 2. Handle Image jika ada upload baru
     if (featuredImage) {
@@ -58,6 +66,32 @@ export default defineEventHandler(async (event) => {
     params.push(id);
 
     await db.query(sql, params);
+
+    // 3. Sinkronisasi Galeri (Hapus yang tidak ada di list existing)
+    if (existingGalleriesRaw !== undefined) {
+      const existingGalleries: string[] = JSON.parse(existingGalleriesRaw);
+      
+      if (existingGalleries.length > 0) {
+        const placeholders = existingGalleries.map(() => '?').join(',');
+        await db.query(
+          `DELETE FROM tbl_agendameta WHERE agenda_id = ? AND meta_key = 'gallery_image' AND meta_value NOT IN (${placeholders})`,
+          [id, ...existingGalleries]
+        );
+      } else {
+        // Jika kosong, hapus semua galeri untuk agenda ini
+        await db.query(`DELETE FROM tbl_agendameta WHERE agenda_id = ? AND meta_key = 'gallery_image'`, [id]);
+      }
+    }
+
+    // 4. Upload file galeri baru jika ada
+    if (newGalleryFiles.length > 0) {
+      for (const file of newGalleryFiles) {
+        const fileData = await saveFile(file, 'agendas');
+        if (fileData?.url) {
+          await db.query(`INSERT INTO tbl_agendameta (agenda_id, meta_key, meta_value) VALUES (?, 'gallery_image', ?)`, [id, fileData.url]);
+        }
+      }
+    }
 
     return { status: 'success', message: 'agenda updated successfully' };
   } catch (error: any) {

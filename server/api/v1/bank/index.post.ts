@@ -6,19 +6,22 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "No form data found" });
   }
 
+  // Helper untuk ambil field dari formData
   const getField = (name: string) =>
     formData.find((f) => f.name === name)?.data.toString();
   const getFile = (name: string) => formData.find((f) => f.name === name);
+
   const bank_name = getField("bank_name") || "";
   const bank_account_number = getField("bank_account_number") || "";
   const bank_account_name = getField("bank_account_name") || "";
   const bank_logo = getFile("bank_logo");
 
-  const bankLogo = getFile("bank_logo");
+  let bank_logo_filename = "";
   let bank_logo_url = "";
   try {
-    if (bankLogo) {
-      const fileData = await saveFile(bankLogo, "banks");
+    if (bank_logo) {
+      const fileData = await saveFile(bank_logo, "banks");
+      bank_logo_filename = fileData?.filename || "";
       bank_logo_url = fileData?.url || "";
     }
     const sql = `INSERT INTO tbl_bank (bank_name, bank_account_number, bank_account_name, bank_logo, bank_logo_url) VALUES (?, ?, ?, ?, ?)`;
@@ -26,7 +29,7 @@ export default defineEventHandler(async (event) => {
       bank_name,
       bank_account_number,
       bank_account_name,
-      bank_logo,
+      bank_logo_filename,
       bank_logo_url,
     ]);
     return {
@@ -35,9 +38,9 @@ export default defineEventHandler(async (event) => {
     };
   } catch (error) {
     console.error("Bank API Error:", error);
-      return {
-          status: "error",
-          message: "Failed to create bank record"
-      };
+    return {
+      status: "error",
+      message: "Failed to create bank record",
+    };
   }
 });

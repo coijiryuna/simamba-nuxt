@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   // Helper untuk ambil field dari formData
   const getField = (name: string) => formData.find(f => f.name === name)?.data.toString();
   const getFile = (name: string) => formData.find(f => f.name === name);
+  const getFiles = (name: string) => formData.filter((f) => f.name === name);
 
   const title = getField('agenda_title') || '';
   const content = getField('agenda_content') || '';
@@ -24,34 +25,47 @@ export default defineEventHandler(async (event) => {
   }
 
   const featuredImage = getFile('featured_image');
+  const galleryImages = getFiles("gallery_images");
   let imageUrl = '';
 
   try {
     // 1. Upload Gambar jika ada
     if (featuredImage) {
-      console.log('featuredImage received:', featuredImage.filename, featuredImage.type);
-      const fileData = await saveFile(featuredImage, 'agendas');
+      const fileData = await saveFile(featuredImage, "agendas");
       if (fileData) {
-        imageUrl = fileData?.url || '';
-        console.log('Image saved successfully:', imageUrl);
-      } else {
-        console.log('saveFile returned null/undefined');
+        imageUrl = fileData?.url || "";
       }
     } else {
-      console.log('No featuredImage received');
+      console.log("No featuredImage received");
     }
 
-    const session = await getUserSession(event)
-    const authorId = (session.user as any)?.id || 1
+    const session = await getUserSession(event);
+    const authorId = (session.user as any)?.id || 1;
 
     // 2. Insert ke tbl_agendas
-    const [result]: any = await db.query(`
+    const [result]: any = await db.query(
+      `
         INSERT INTO tbl_agendas 
           (agenda_title, agenda_name, agenda_content, agenda_status, agenda_type, agenda_author, featured_image_url, agenda_date, agenda_modified)
         VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-      `, [title, slug, content, status, agenda_type, authorId, imageUrl]);
+      `,
+      [title, slug, content, status, agenda_type, authorId, imageUrl],
+    );
 
     const agendaId = result.insertId;
+
+    // 3. Simpan Galeri Foto ke tbl_agendameta
+    if (galleryImages.length > 0) {
+      for (const file of galleryImages) {
+        const fileData = await saveFile(file, "agendas");
+        if (fileData?.url) {
+          await db.query(
+            `INSERT INTO tbl_agendameta (agenda_id, meta_key, meta_value) VALUES (?, 'gallery_image', ?)`,
+            [agendaId, fileData.url],
+          );
+        }
+      }
+    }
 
     return {
       status: 'success',

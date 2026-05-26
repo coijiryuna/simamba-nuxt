@@ -9,12 +9,15 @@ export default defineEventHandler(async (event) => {
 
   const getField = (name: string) => formData.find(f => f.name === name)?.data.toString();
   const getFile = (name: string) => formData.find(f => f.name === name);
+  const getFiles = (name: string) => formData.filter(f => f.name === name);
 
   const title = getField('post_title');
   const content = getField('post_content');
   const status = getField('post_status');
   const categories = getField('categories')?.split(',') || [];
   const featuredImage = getFile('featured_image');
+  const existingPostsRaw = getField("existing_posts");
+  const newPostFiles = getFiles("post_images");
 
   try {
     // 1. Update basic data
@@ -111,6 +114,31 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // 3. Sinkronisasi Galeri (Hapus yang tidak ada di list existing)
+    if (existingPostsRaw !== undefined) {
+      const existingPost: string[] = JSON.parse(existingPostsRaw);
+      
+      if (existingPost.length > 0) {
+        const placeholders = existingPost.map(() => '?').join(',');
+        await db.query(
+          `DELETE FROM tbl_postmeta WHERE post_id = ? AND meta_key = 'post_image' AND meta_value NOT IN (${placeholders})`,
+          [id, ...existingPost]
+        );
+      } else {
+        // Jika kosong, hapus semua galeri untuk agenda ini
+        await db.query(`DELETE FROM tbl_postmeta WHERE post_id = ? AND meta_key = 'post_image'`, [id]);
+      }
+    }
+
+    // 4. Upload file galeri baru jika ada
+    if (newPostFiles.length > 0) {
+      for (const file of newPostFiles) {
+        const fileData = await saveFile(file, 'berita');
+        if (fileData?.url) {
+          await db.query(`INSERT INTO tbl_postmeta (post_id, meta_key, meta_value) VALUES (?, 'post_image', ?)`, [id, fileData.url]);
+        }
+      }
+    }
     return { status: 'success', message: 'Post updated successfully' };
   } catch (error: any) {
     console.error('Update Post Error:', error);

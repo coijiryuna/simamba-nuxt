@@ -7,6 +7,7 @@ import {
   ArrowLeft, 
   Save, 
   Image as ImageIcon, 
+  Plus,
   X,
   Upload
 } from 'lucide-vue-next'
@@ -22,10 +23,12 @@ const form = reactive({
   agenda_content: '',
   agenda_status: 'publish',
   agenda_type: 'post',
-  featured_image: null
+  featured_image: null,
+  gallery_images: [] // Penampung file foto baru
 })
 
 const imagePreview = ref(null)
+const galleryPreviews = ref([]) // Preview gabungan (lama + baru)
 const { data: agenda } = await useFetch(`/api/v1/agendas/${id}`)
 
 // Sync form with fetched data
@@ -36,9 +39,27 @@ watchEffect(() => {
     form.agenda_status = agenda.value.agenda_status || 'publish'
     form.agenda_type = agenda.value.agenda_type || 'agenda'
     imagePreview.value = agenda.value.featured_image_url
-    // Extract category IDs
+
+    // Masukkan gambar galeri lama ke preview
+    if (agenda.value.gallery_images) {
+      galleryPreviews.value = [...agenda.value.gallery_images]
+    }
   }
 })
+
+// Handle Gallery Changes (Multi-upload)
+const onGalleryChange = (e) => {
+  const files = Array.from(e.target.files)
+  files.forEach(file => {
+    form.gallery_images.push(file)
+    galleryPreviews.value.push(URL.createObjectURL(file))
+  })
+  e.target.value = ''
+}
+
+const removeGalleryImage = (index) => {
+  galleryPreviews.value.splice(index, 1)
+}
 
 const onFileChange = (e) => {
   const file = e.target.files[0]
@@ -59,6 +80,15 @@ const submit = async () => {
   if (form.featured_image) {
     formData.append('featured_image', form.featured_image)
   }
+
+  // Kirim daftar galeri yang lama (yang tidak dihapus)
+  const existingGalleries = galleryPreviews.value.filter(p => typeof p === 'string' && !p.startsWith('blob:'))
+  formData.append('existing_galleries', JSON.stringify(existingGalleries))
+
+  // Kirim file galeri yang baru ditambahkan
+  form.gallery_images.forEach((file) => {
+    formData.append('gallery_images', file)
+  })
 
   try {
     await $fetch(`/api/v1/agendas/${id}`, {
@@ -176,6 +206,43 @@ const submit = async () => {
               <Upload class="w-8 h-8 text-slate-300 mx-auto mb-2 group-hover:text-emerald-500" />
               <p class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 uppercase tracking-widest">
                 Klik untuk Upload</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Galeri Foto Dinamis -->
+        <div class="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+          <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+            <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Galeri Foto Kegiatan</h3>
+            <label
+              class="cursor-pointer bg-emerald-100 text-emerald-700 p-1.5 rounded-sm hover:bg-emerald-200 transition-colors shadow-sm">
+              <Plus class="w-3 h-3" />
+              <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+            </label>
+          </div>
+          <div class="p-4">
+            <div v-if="galleryPreviews.length > 0" class="grid grid-cols-3 gap-2">
+              <div v-for="(prev, idx) in galleryPreviews" :key="idx" class="relative group aspect-square">
+                <img :src="prev" class="w-full h-full object-cover rounded-sm border border-slate-100 shadow-xs" />
+                <button @click="removeGalleryImage(idx)" type="button"
+                  class="absolute -top-1 -right-1 p-1 bg-red-600 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <X class="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <!-- Tombol tambah kecil di dalam grid -->
+              <label
+                class="border-2 border-dashed border-slate-100 rounded-sm flex items-center justify-center cursor-pointer hover:border-emerald-300 hover:bg-emerald-50 transition-all aspect-square">
+                <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+                <Plus class="w-5 h-5 text-slate-300" />
+              </label>
+            </div>
+            <div v-else class="text-center py-8 border-2 border-dashed border-slate-100 rounded-sm bg-slate-50/50">
+              <label class="cursor-pointer group block">
+                <input type="file" multiple @change="onGalleryChange" accept="image/*" class="hidden" />
+                <ImageIcon class="w-8 h-8 text-slate-200 mx-auto mb-2 group-hover:text-emerald-400 transition-colors" />
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-emerald-600">
+                  Tambah Galeri</p>
+              </label>
             </div>
           </div>
         </div>
