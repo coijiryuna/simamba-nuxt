@@ -4,10 +4,23 @@ export default defineEventHandler(async (event) => {
 
   try {
     for (const [key, value] of Object.entries(body)) {
-      // Kita pakai REPLACE INTO (MySQL) biar kalau ada diupdate, kalau nggak ada ditambahin
+      // Lewati jika value null/undefined atau jika key adalah properti internal Vue/Nuxt
+      if (value === null || value === undefined || key.startsWith("_"))
+        continue;
+
+      // Pastikan value diubah menjadi string. Jika berupa object, simpan sebagai JSON string.
+      const processedValue =
+        typeof value === "object" ? JSON.stringify(value) : String(value);
+
+      /**
+       * Menggunakan INSERT ... ON DUPLICATE KEY UPDATE jauh lebih aman daripada REPLACE INTO.
+       * Pastikan kolom 'option_name' adalah UNIQUE atau PRIMARY KEY di database Anda.
+       */
       await db.query(
-        'REPLACE INTO tbl_options (option_name, option_value, autoload) VALUES (?, ?, "yes")',
-        [key, value]
+        `INSERT INTO tbl_options (option_name, option_value, autoload) 
+         VALUES (?, ?, 'yes') 
+         ON DUPLICATE KEY UPDATE option_value = VALUES(option_value)`,
+        [key, processedValue],
       );
     }
 

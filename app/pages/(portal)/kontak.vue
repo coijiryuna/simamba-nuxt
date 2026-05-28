@@ -2,18 +2,9 @@
 definePageMeta({
   layout: 'default'
 })
-
-useSeoMeta({
-  title: 'Hubungi Kami - BAZNAS Kabupaten Tangerang',
-  description: 'Butuh bantuan atau informasi lebih lanjut? Hubungi layanan BAZNAS Kabupaten Tangerang melalui WhatsApp, Telepon, atau Kunjungi Kantor kami.',
-  ogTitle: 'Kontak BAZNAS Kabupaten Tangerang',
-  ogImage: '/logo.png'
-})
-
-const { data: settingsData } = await useFetch('/api/v1/settings')
-const settings = computed(() => settingsData.value?.data || {})
-
 import Swal from 'sweetalert2'
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const form = ref({
   name: '',
@@ -70,6 +61,15 @@ const embedMapsUrl = computed(() => {
   // Default embed for BAZNAS Kabupaten Tangerang based on the provided location
   return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1155644218125!2d106.53403517579113!3d-6.248499393739896!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69fd8aebcbc0c9%3A0x2d6f50ad9b40a3e2!2sIslamic%20Center%20Kab.%20Tanggerang%2C%20Ciakar%2C%20Kec.%20Panongan%2C%20Kabupaten%20Tangerang%2C%20Banten!5e0!3m2!1sid!2sid!4v1778689354504!5m2!1sid!2sid"
 })
+
+useSeoMeta({
+  title: 'Hubungi Kami - BAZNAS Kabupaten Tangerang',
+  description: 'Butuh bantuan atau informasi lebih lanjut? Hubungi layanan BAZNAS Kabupaten Tangerang melalui WhatsApp, Telepon, atau Kunjungi Kantor kami.',
+  ogTitle: 'Kontak BAZNAS Kabupaten Tangerang',
+  ogImage: settings.value.site_logo || '/logo.png'
+})
+
+
 </script>
 
 <template>
@@ -158,7 +158,7 @@ const embedMapsUrl = computed(() => {
     <div v-if="settings.site_maps_url" class="mt-16 reveal">
       <!-- Google Maps Embed Section -->
       <div v-if="settings.site_maps_url" class="bg-white p-2 rounded-sm shadow-xl border border-slate-100">
-        <div class="w-full h-[450px] rounded-sm overflow-hidden bg-slate-100">
+        <div class="w-full h-112.5 rounded-sm overflow-hidden bg-slate-100">
           <iframe 
             :src="embedMapsUrl" 
             class="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700" 

@@ -2,6 +2,8 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const slug = route.params.slug
@@ -14,7 +16,10 @@ useSeoMeta({
   ogTitle: () => `${page.value?.post_title} - BAZNAS Kabupaten Tangerang`,
   description: () => page.value?.post_excerpt || 'Informasi resmi dari BAZNAS Kabupaten Tangerang.',
   ogDescription: () => page.value?.post_excerpt || 'Informasi resmi dari BAZNAS Kabupaten Tangerang.',
-  ogImage: () => page.value?.featured_image_url || '/logo.png',
+  ogImage: () => page.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterImage: () => page.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterTitle: () => page.value?.post_title || 'Halaman - BAZNAS Kabupaten Tangerang',
+  twitterDescription: () => page.value?.post_excerpt || 'Informasi resmi dari BAZNAS Kabupaten Tangerang.',
   twitterCard: 'summary_large_image',
 })
 </script>

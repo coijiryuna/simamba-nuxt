@@ -1,16 +1,16 @@
 <script setup>
 const { data: layoutData } = await useAsyncData('layout-data', async () => {
-  const [categories, links, settingsData] = await Promise.all([
+  const [categories, links] = await Promise.all([
     $fetch('/api/v1/categories'),
     $fetch('/api/v1/links'),
-    $fetch('/api/v1/settings')
   ])
-  return { categories, links, settings: settingsData?.data || {} }
+  return { categories, links }
 })
 
 const categories = computed(() => layoutData.value?.categories || [])
 const links = computed(() => layoutData.value?.links || [])
-const settings = computed(() => layoutData.value?.settings || {})
+// Inject settings from app.vue
+const settings = inject('settings', computed(() => ({})))
 
 const navbarItems = computed(() => {
   const data = categories.value
@@ -93,7 +93,7 @@ const pinnedLinks = computed(() => {
               Tentang Kami
               <svg class="w-3 h-3 ml-1 opacity-50 group-hover:rotate-180 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </div>
-            <div class="absolute top-[80px] left-0 w-64 bg-white shadow-2xl rounded-sm py-2 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 border-t-4 border-[#01803d]">
+            <div class="absolute top-20 left-0 w-64 bg-white shadow-2xl rounded-sm py-2 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 border-t-4 border-[#01803d]">
               <NuxtLink to="/profil-baznas" class="block px-6 py-3 text-[10px] font-bold text-slate-600 hover:text-[#01803d] hover:bg-emerald-50 transition-all uppercase tracking-wider">Profil Baznas</NuxtLink>
               <NuxtLink to="/struktur-baznas" class="block px-6 py-3 text-[10px] font-bold text-slate-600 hover:text-[#01803d] hover:bg-emerald-50 transition-all uppercase tracking-wider">Struktur Baznas</NuxtLink>
               <NuxtLink to="/upz-baznas" class="block px-6 py-3 text-[10px] font-bold text-slate-600 hover:text-[#01803d] hover:bg-emerald-50 transition-all uppercase tracking-wider">UPZ Baznas</NuxtLink>
@@ -110,7 +110,7 @@ const pinnedLinks = computed(() => {
                 {{ item.name }}
                 <svg class="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </NuxtLink>
-              <div class="absolute top-[80px] left-0 w-64 bg-white shadow-2xl rounded-sm py-2 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 border-t-4 border-[#01803d] z-[60]">
+              <div class="absolute top-20 left-0 w-64 bg-white shadow-2xl rounded-sm py-2 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 border-t-4 border-[#01803d] z-60">
                 <NuxtLink v-for="child in item.children" :key="child.id" :to="getLink(child)" class="block px-6 py-3 text-[10px] font-bold text-slate-600 hover:text-[#01803d] hover:bg-emerald-50 transition-all uppercase tracking-wider">
                   {{ child.name }}
                 </NuxtLink>

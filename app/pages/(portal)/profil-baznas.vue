@@ -2,17 +2,16 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 useSeoMeta({
   title: 'Profil BAZNAS - Kabupaten Tangerang',
   description: 'Kenali lebih dekat BAZNAS Kabupaten Tangerang, lembaga resmi pengelola zakat yang amanah dan profesional.',
   ogTitle: 'Profil BAZNAS Kabupaten Tangerang',
   ogDescription: 'Kenali lebih dekat BAZNAS Kabupaten Tangerang, lembaga resmi pengelola zakat yang amanah dan profesional.',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
-
-const { data: settingsData } = await useFetch('/api/v1/settings')
-const settings = computed(() => settingsData.value?.data || {})
 
 const { data: pimpinanRes } = await useFetch('/api/v1/pimpinan')
 const chairperson = computed(() => {

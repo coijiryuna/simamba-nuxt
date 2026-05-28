@@ -2,6 +2,8 @@
 definePageMeta({
     layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const slug = route.params.slug
@@ -27,7 +29,11 @@ useSeoMeta({
         return 'Halaman Tidak Ditemukan'
     },
     description: () => fallbackPost.value?.agenda_excerpt || 'Informasi dari BAZNAS Kabupaten Tangerang.',
-    ogImage: () => fallbackPost.value?.featured_image_url || '/logo.png'
+    ogImage: () => fallbackPost.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+    twitterImage: () => fallbackPost.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+    twitterTitle: () => fallbackPost.value?.agenda_title,
+    twitterDescription: () => fallbackPost.value?.agenda_excerpt,
+    twitterCard: 'summary_large_image',
 })
 </script>
 

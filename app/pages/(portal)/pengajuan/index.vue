@@ -3,13 +3,20 @@ definePageMeta({
   layout: 'default'
 })
 
+const route = useRoute()
 const { data: layoutData } = useNuxtData('layout-data')
 const settings = computed(() => layoutData.value?.settings || {})
 const isEnabled = computed(() => settings.value.submission_enabled === 'yes')
 
 useSeoMeta({
   title: 'Pengajuan Bantuan Online - BAZNAS Kabupaten Tangerang',
-  description: 'Ajukan permohonan bantuan secara online melalui portal resmi BAZNAS Kabupaten Tangerang.'
+  description: 'Ajukan permohonan bantuan secara online melalui portal resmi BAZNAS Kabupaten Tangerang.',
+  ogImage: () => settings.value.site_logo || '/favicon.ico',
+  twitterImage: () => settings.value.site_logo || '/favicon.ico',
+  twitterTitle: 'Pengajuan Bantuan Online - BAZNAS Kabupaten Tangerang',
+  twitterDescription: 'Ajukan permohonan bantuan secara online melalui portal resmi BAZNAS Kabupaten Tangerang.',
+  twitterCard: 'summary_large_image'
+
 })
 
 const currentStep = ref(1)

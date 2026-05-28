@@ -2,6 +2,9 @@
 definePageMeta({
     layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
+
 const route = useRoute()
 const allAgenda = ref([])
 const currentPage = ref(1)
@@ -89,7 +92,11 @@ onMounted(() => {
 useSeoMeta({
     title: 'Agenda - BAZNAS Kabupaten Tangerang',
     description: 'Informasi agenda kegiatan, pimpinan, dan acara terkini dari BAZNAS Kabupaten Tangerang.',
-    ogImage: '/logo.png'
+    ogImage: () => settings.value.site_logo || '/favicon.ico',
+    twitterImage: () => settings.value.site_logo || '/favicon.ico',
+    twitterTitle: 'Agenda - BAZNAS Kabupaten Tangerang',
+    twitterDescription: 'Informasi agenda kegiatan, pimpinan, dan acara terkini dari BAZNAS Kabupaten Tangerang.',
+    twitterCard: 'summary_large_image'
 })
 </script>
 

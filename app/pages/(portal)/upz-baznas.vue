@@ -2,12 +2,14 @@
 definePageMeta({
   layout: "default",
 });
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 useSeoMeta({
   title: 'Daftar UPZ - BAZNAS Kabupaten Tangerang',
   description: 'Daftar Unit Pengumpul Zakat (UPZ) resmi BAZNAS Kabupaten Tangerang yang tersebar di berbagai wilayah.',
   ogTitle: 'Unit Pengumpul Zakat (UPZ) Kabupaten Tangerang',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
 
 const { data: upzData, pending } = await useFetch("/api/v1/upz-baznas", {
@@ -165,7 +167,7 @@ const badgeColor = (tipe) => {
             </span>
             <span
               v-if="upz.npwz"
-              class="text-[12px] text-slate-400 font-mono truncate max-w-[140px]"
+class="text-[12px] text-slate-400 font-mono truncate max-w-35"
               >{{ upz.npwz }}</span
             >
           </div>

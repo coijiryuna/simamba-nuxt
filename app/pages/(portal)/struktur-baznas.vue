@@ -2,6 +2,8 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const { data: pimpinanData } = await useFetch('/api/v1/pimpinan')
 
@@ -21,7 +23,7 @@ useSeoMeta({
   title: 'Struktur Pimpinan - BAZNAS Kabupaten Tangerang',
   description: 'Daftar pimpinan dan struktur organisasi BAZNAS Kabupaten Tangerang periode saat ini.',
   ogTitle: 'Struktur Pimpinan BAZNAS Kabupaten Tangerang',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
 </script>
 

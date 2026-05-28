@@ -2,6 +2,8 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const slug = route.params.slug
@@ -19,7 +21,10 @@ useSeoMeta({
   ogTitle: () => post.value?.post_title,
   description: () => post.value?.post_excerpt || 'Baca berita terbaru dari BAZNAS Kabupaten Tangerang.',
   ogDescription: () => post.value?.post_excerpt,
-  ogImage: () => post.value?.featured_image_url || '/logo.png',
+  ogImage: () => post.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterImage: () => post.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterTitle: () => post.value?.post_title,
+  twitterDescription: () => post.value?.post_excerpt,
   twitterCard: 'summary_large_image',
 })
 </script>
@@ -43,7 +48,7 @@ useSeoMeta({
         <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
           <NuxtLink to="/" class="hover:text-[#01803d]">Beranda</NuxtLink>
           <span>/</span>
-          <span class="text-[#01803d] truncate max-w-[200px]">{{ post.post_title }}</span>
+          <span class="text-[#01803d] truncate max-w-50">{{ post.post_title }}</span>
         </nav>
 
         <div class="space-y-3">

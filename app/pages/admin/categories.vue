@@ -138,7 +138,7 @@ const getChildren = (parentId) => categories.value?.filter(c => c.parent === par
             <input v-model="form.name" type="text" placeholder="Contoh: Zakat Fitrah" class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 px-3 text-sm outline-none focus:border-emerald-600 font-bold" />
           </div>
           <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block flex items-center gap-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block items-center gap-1">
               <LinkIcon class="w-3 h-3" /> Link Redirect (Opsional)
             </label>
             <input v-model="form.term_link" type="text" placeholder="Contoh: /tentang-zakat" class="w-full bg-slate-50 border border-slate-200 rounded-sm py-2 px-3 text-[10px] outline-none focus:border-emerald-600 font-medium" />

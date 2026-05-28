@@ -18,25 +18,40 @@ export const getUploadBaseDir = () => {
   return path.join(process.cwd(), 'public/uploads');
 };
 
-export const saveFile = async (file: any, folder = 'posts') => {
+export const saveFile = async (
+  file: any,
+  folder: string = "posts",
+  shouldConvert: boolean = true,
+) => {
   if (!file || !file.data) return null;
 
-  // Nama file selalu akhiri dengan .webp
-  const baseName = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-  const fileName = `${baseName}.webp`;
-  
+  const baseName = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+
+  // Tentukan ekstensi: jika tidak convert, ambil dari file asli, default ke png
+  const originalExt = file.filename
+    ? path.extname(file.filename).slice(1)
+    : "png";
+  const extension = shouldConvert ? "webp" : originalExt;
+  const fileName = `${baseName}.${extension}`;
+
   const uploadDir = path.join(getUploadBaseDir(), folder);
   await fs.mkdir(uploadDir, { recursive: true });
-  
-  const filePath = path.join(uploadDir, fileName);
 
-  // Proses konversi ke WebP pakai Sharp
-  await sharp(file.data)
-    .webp({ quality: 80 })
-    .toFile(filePath);
-  
+  const filePath = path.join(uploadDir, fileName);
+  let pipeline = sharp(file.data);
+
+  if (shouldConvert) {
+    pipeline = pipeline.webp({ quality: 80 });
+  } else {
+    // Jika tidak convert ke webp, pastikan sharp tetap memproses ke format aslinya
+    pipeline = pipeline.toFormat(extension as any);
+  }
+
+  // Simpan file. Sharp akan otomatis menyesuaikan format berdasarkan ekstensi di filePath
+  await pipeline.toFile(filePath);
+
   return {
     filename: fileName,
-    url: `/uploads/${folder}/${fileName}`
+    url: `/uploads/${folder}/${fileName}`,
   };
 };

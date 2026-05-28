@@ -41,6 +41,7 @@ const formatIDR = (val) => {
 useSeoMeta({
   title: 'Kalkulator Zakat - BAZNAS Kabupaten Tangerang',
   description: 'Hitung kewajiban zakat maal dan zakat fitrah Anda dengan mudah dan akurat sesuai syariat.'
+  
 })
 </script>
 

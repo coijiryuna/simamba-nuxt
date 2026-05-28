@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 function loadEnvFile() {
   const possiblePaths = [
     path.join(process.cwd(), ".env"),
-    "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
-    // '/home/www/baznas/.env'
+    // "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
+    "/home/www/baznas/.env",
   ];
 
   try {
@@ -90,6 +90,20 @@ export default defineNitroPlugin(() => {
   }
   if (!process.env.DONASI_BASE) {
     process.env.DONASI_BASE = "https://donasi.baznastangerangkab.or.id";
+  }
+
+  // === Google ID ===
+  if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID) {
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID =
+      "your_google_id.apps.googleusercontent.com";
+  }
+  if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET) {
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = "your_google_secret";
+  }
+
+  // === UPLOAD DIRECTORY === paksa untuk aapanel
+  if (!process.env.UPLOAD_DIR) {
+    process.env.UPLOAD_DIR = "/home/www/baznas/uploads";
   }
 
   console.log(

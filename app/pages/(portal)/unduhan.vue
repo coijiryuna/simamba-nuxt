@@ -1,4 +1,7 @@
 <script setup>
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
+
 const { data: downloadsRes } = await useFetch('/api/v1/downloads')
 const downloads = computed(() => downloadsRes.value?.data || [])
 
@@ -6,7 +9,7 @@ useSeoMeta({
   title: 'Pusat Unduhan - BAZNAS Kabupaten Tangerang',
   description: 'Akses laporan keuangan, laporan tahunan, dan formulir resmi BAZNAS Kabupaten Tangerang secara transparan.',
   ogTitle: 'Pusat Unduhan Dokumen BAZNAS Kabupaten Tangerang',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
 
 import { 

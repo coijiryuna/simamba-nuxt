@@ -12,11 +12,14 @@ import {
 
 definePageMeta({ layout: 'default' })
 
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
+
 useSeoMeta({
   title: 'Statistik & Dampak - BAZNAS Kabupaten Tangerang',
   description: 'Transparansi pengelolaan dana zakat, infaq, dan sedekah melalui data statistik penyaluran yang akurat.',
   ogTitle: 'Statistik Penyaluran BAZNAS Kabupaten Tangerang',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
 
 const tahun = ref(new Date().getFullYear())
@@ -203,7 +206,7 @@ const availableYears = computed(() => {
           <div class="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <LayoutGrid class="w-5 h-5 text-blue-600" />
-              <h2 class="text-base font-black text-slate-800 uppercase tracking-[0.1em]">Bidang Pendistribusian</h2>
+              <h2 class="text-base font-black text-slate-800 uppercase tracking-widest">Bidang Pendistribusian</h2>
             </div>
             <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">
               Total: {{ fmtShort(penyDist.reduce((s, i) => s + i.realisasi, 0)) }}
@@ -240,7 +243,7 @@ const availableYears = computed(() => {
           <div class="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <TrendingUp class="w-5 h-5 text-amber-500" />
-              <h2 class="text-base font-black text-slate-800 uppercase tracking-[0.1em]">Bidang Pendayagunaan</h2>
+              <h2 class="text-base font-black text-slate-800 uppercase tracking-widest">Bidang Pendayagunaan</h2>
             </div>
             <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full uppercase tracking-widest">
               Total: {{ fmtShort(penyDaya.reduce((s, i) => s + i.realisasi, 0)) }}

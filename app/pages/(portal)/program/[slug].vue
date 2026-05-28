@@ -2,6 +2,8 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const slug = route.params.slug
@@ -15,11 +17,14 @@ const { data: recentPosts } = useFetch('/api/news', {
 })
 
 useSeoMeta({
-  title: () => `${post.value?.post_title || 'Detail Berita'} - BAZNAS Kabupaten Tangerang`,
+  title: () => `${post.value?.post_title || 'Detail Program'} - BAZNAS Kabupaten Tangerang`,
   ogTitle: () => post.value?.post_title,
-  description: () => post.value?.post_excerpt || 'Baca berita terbaru dari BAZNAS Kabupaten Tangerang.',
+  description: () => post.value?.post_excerpt || 'Baca program terbaru dari BAZNAS Kabupaten Tangerang.',
   ogDescription: () => post.value?.post_excerpt,
-  ogImage: () => post.value?.featured_image_url || '/logo.png',
+  ogImage: () => post.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterImage: () => post.value?.featured_image_url || settings.value.site_logo || '/favicon.ico',
+  twitterTitle: () => post.value?.post_title,
+  twitterDescription: () => post.value?.post_excerpt,
   twitterCard: 'summary_large_image',
 })
 </script>
@@ -28,11 +33,11 @@ useSeoMeta({
   <div class="max-w-6xl mx-auto px-4 py-12">
     <div v-if="pending" class="flex flex-col items-center justify-center py-32 space-y-4">
       <div class="w-12 h-12 border-4 border-[#01803d] border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Memuat Berita...</p>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Memuat Program...</p>
     </div>
 
     <div v-else-if="error" class="text-center py-32 bg-red-50 rounded-2xl border border-red-100">
-      <p class="text-red-500 font-bold mb-4">Waduh! Berita tidak ditemukan.</p>
+      <p class="text-red-500 font-bold mb-4">Program tidak ditemukan.</p>
       <NuxtLink to="/" class="text-sm font-black text-[#01803d] uppercase tracking-widest hover:underline">Kembali ke Beranda</NuxtLink>
     </div>
 
@@ -43,7 +48,7 @@ useSeoMeta({
         <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
           <NuxtLink to="/" class="hover:text-[#01803d]">Beranda</NuxtLink>
           <span>/</span>
-          <span class="text-[#01803d] truncate max-w-[200px]">{{ post.post_title }}</span>
+          <span class="text-[#01803d] truncate max-w-50">{{ post.post_title }}</span>
         </nav>
 
         <div class="space-y-3">

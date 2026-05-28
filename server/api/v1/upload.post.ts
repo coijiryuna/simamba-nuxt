@@ -1,17 +1,34 @@
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event);
-  if (!formData) throw createError({ statusCode: 400, statusMessage: 'No file uploaded' });
+  if (!formData)
+    throw createError({ statusCode: 400, statusMessage: "No file uploaded" });
 
-  const file = formData.find(f => f.name === 'file');
-  if (!file) throw createError({ statusCode: 400, statusMessage: 'Field "file" is required' });
+  const file = formData.find((f) => f.name === "file");
+  if (!file)
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Field "file" is required',
+    });
 
-  const folderField = formData.find(f => f.name === 'folder');
-  const folder = folderField ? folderField.data.toString() : 'general';
+  const folderField = formData.find((f) => f.name === "folder");
+  const folder = folderField ? folderField.data.toString() : "general";
 
-  // Pakai utility saveFile yang tadi sudah kita buat (otomatis resize/compress jadi WebP)
-  const result = await saveFile(file, folder);
+  const convertWebpField = formData.find((f) => f.name === "convertWebp");
+  const shouldConvert = convertWebpField
+    ? convertWebpField.data.toString() !== "no"
+    : true;
 
-  if (!result) throw createError({ statusCode: 500, statusMessage: 'Gagal memproses gambar' });
+  try {
+    const result = await saveFile(file, folder, shouldConvert);
 
-  return { url: result.url };
+    if (!result || !result.url) {
+      throw new Error("Proses simpan file gagal atau response tidak valid");
+    }
+    return { url: result.url };
+  } catch (error: any) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message || "Gagal memproses gambar pada server",
+    });
+  }
 });

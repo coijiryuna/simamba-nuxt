@@ -3,6 +3,9 @@ definePageMeta({
   layout: 'default'
 })
 
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
+
 const { data: campaigns, pending } = useFetch('/api/v1/campaigns')
 
 const formatCurrency = (amount) => {
@@ -17,6 +20,16 @@ const calculateProgress = (current, goal) => {
   if (!goal) return 0
   return Math.min(Math.round((current / goal) * 100), 100)
 }
+
+useSeoMeta({
+  title: 'Program Donasi - BAZNAS Kabupaten Tangerang',
+  description: 'Jelajahi program donasi terbaru dari BAZNAS Kabupaten Tangerang. Temukan berbagai inisiatif untuk membantu sesama dan berkontribusi pada kebaikan bersama.',
+  ogImage: settings.value.site_logo || '/logo.png',
+  twitterImage: settings.value.site_logo || '/logo.png',
+  twitterTitle: 'Program Donasi - BAZNAS Kabupaten Tangerang',
+  twitterDescription: 'Jelajahi program donasi terbaru dari BAZNAS Kabupaten Tangerang. Temukan berbagai inisiatif untuk membantu sesama dan berkontribusi pada kebaikan bersama.',
+  twitterCard: 'summary_large_image',
+})
 </script>
 
 <template>
@@ -40,7 +53,7 @@ const calculateProgress = (current, goal) => {
           </div>
         </div>
         <div class="p-8 space-y-6">
-          <h3 class="font-black text-slate-800 text-xl line-clamp-2 min-h-[3.5rem]">{{ item.title }}</h3>
+          <h3 class="font-black text-slate-800 text-xl line-clamp-2 min-h-14">{{ item.title }}</h3>
           
           <div class="space-y-3">
             <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">

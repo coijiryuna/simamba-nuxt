@@ -2,6 +2,8 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const slug = route.params.slug
@@ -45,12 +47,12 @@ watch(currentCategory, (newCat) => {
 
 useSeoMeta({
   title: () => {
-    if (fallbackPost.value) return `${fallbackPost.value.post_title} - BAZNAS Kabupaten Tangerang`
-    if (currentCategory.value) return `${currentCategory.value.name} - BAZNAS Kabupaten Tangerang`
+    if (fallbackPost.value) return `${fallbackPost.value.post_title} - ${settings.value.blogname}`
+    if (currentCategory.value) return `${currentCategory.value.name} - ${settings.value.blogname}`
     return 'Halaman Tidak Ditemukan'
   },
-  description: () => fallbackPost.value?.post_excerpt || 'Informasi dari BAZNAS Kabupaten Tangerang.',
-  ogImage: () => fallbackPost.value?.featured_image_url || '/logo.png'
+  description: () => fallbackPost.value?.post_excerpt || `Informasi dari ${settings.value.blogname}.`,
+  ogImage: () => fallbackPost.value?.featured_image_url || settings.value.site_logo || '/logo.png'
 })
 </script>
 

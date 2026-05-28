@@ -318,7 +318,7 @@ const updateForm = async () => {
                        <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-sm flex items-center justify-center">
                           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/></svg>
                        </div>
-                       <span class="text-[10px] font-bold text-emerald-700 truncate max-w-[150px]">Berkas Sudah Ada</span>
+                    <span class="text-[10px] font-bold text-emerald-700 truncate max-w-37.5">Berkas Sudah Ada</span>
                        <button @click="form.requirements[req.ID] = ''" class="ml-auto text-red-500 hover:text-red-700">
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                        </button>

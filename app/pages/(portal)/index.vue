@@ -2,13 +2,15 @@
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 useSeoMeta({
-  title: 'BAZNAS Kabupaten Tangerang - Pilihan Pertama Pembayar Zakat',
+  title: 'BAZNAS Kabupaten Tangerang - Lembaga Utama Menyejahterakan Umat',
   description: 'Lembaga resmi pemerintah yang mengelola Zakat, Infaq, dan Sedekah secara profesional dan transparan di Kabupaten Tangerang.',
-  ogTitle: 'BAZNAS Kabupaten Tangerang - Pilihan Pertama Pembayar Zakat',
+  ogTitle: 'BAZNAS Kabupaten Tangerang - Lembaga Utama Menyejahterakan Umat',
   ogDescription: 'Lembaga resmi pemerintah yang mengelola Zakat, Infaq, dan Sedekah secara profesional dan transparan di Kabupaten Tangerang.',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/logo.png'
 })
 
 const config = useRuntimeConfig()
@@ -69,7 +71,7 @@ const formatDate = (dateString) => {
     <!-- HERO SECTION (SLIDER) -->
     <section class="-mx-4 lg:-mx-2 reveal relative z-0">
       <div v-if="pending && !sliders.data?.length"
-        class="h-[300px] md:h-[600px] bg-slate-100 animate-pulse flex items-center justify-center">
+        class="h-75 md:h-150 bg-slate-100 animate-pulse flex items-center justify-center">
         <div class="text-slate-300 font-black uppercase tracking-[0.5em]">BAZNAS TANGERANG</div>
       </div>
       <HomeSlider v-else :data="sliders" />
@@ -158,7 +160,7 @@ const formatDate = (dateString) => {
             <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
               <div class="space-y-4">
                 <h3
-                  class="text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2 leading-tight min-h-[2.5rem]">
+                  class="text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2 leading-tight min-h-10">
                   {{ campaign.title }}</h3>
                 <div class="space-y-2">
                   <div class="flex justify-between text-[10px] font-black uppercase tracking-tighter">
@@ -214,7 +216,7 @@ const formatDate = (dateString) => {
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 :alt="post.post_title" loading="lazy">
               <div
-                class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                class="absolute inset-0 bg-linear-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
               </div>
             </div>
             <div class="space-y-2">

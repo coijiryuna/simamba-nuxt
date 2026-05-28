@@ -57,8 +57,8 @@ const saveSettings = async () => {
   loading.value = true
   try {
     await $fetch('/api/v1/settings', {
-      method: 'PUT',
-      body: settings.value
+      method: 'POST',
+      body: { ...settings.value } // Gunakan spread untuk memastikan object bersih terkirim
     })
     Swal.fire({
       icon: 'success',
@@ -80,6 +80,11 @@ const onFileUpload = async (event, type) => {
   if (!file) return
 
   const formData = new FormData()
+  // Menambahkan parameter untuk mencegah konversi WebP untuk logo dan favicon
+  if (type === 'logo' || type === 'favicon') {
+    formData.append('convertWebp', 'no');
+  }
+
   formData.append('file', file)
   formData.append('folder', 'website')
 
@@ -97,11 +102,13 @@ const onFileUpload = async (event, type) => {
       settings.value.flyer_image = res.url
     }
 
+    // Segera simpan perubahan ke database setelah URL logo/favicon didapat
+    await saveSettings()
+
     Swal.fire({
       icon: 'success',
-      title: 'Terunggah',
-      text: 'File berhasil diunggah',
-      timer: 1500,
+      title: 'Berhasil',
+      text: 'File berhasil diunggah dan pengaturan diperbarui',
       showConfirmButton: false
     })
   } catch (error) {
@@ -232,7 +239,8 @@ const onFileUpload = async (event, type) => {
 
             <div class="space-y-4">
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Gambar Flyer</label>
-              <div class="bg-slate-50 border-2 border-dashed border-slate-200 p-8 rounded-sm flex flex-col items-center gap-6 group/upload relative min-h-[300px] justify-center">
+              <div
+                class="bg-slate-50 border-2 border-dashed border-slate-200 p-8 rounded-sm flex flex-col items-center gap-6 group/upload relative min-h-75 justify-center">
                 <div v-if="settings.flyer_image" class="relative group/img max-w-full">
                   <img :src="settings.flyer_image" class="max-h-64 object-contain shadow-xl rounded-sm border-4 border-white" />
                   <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center rounded-sm">

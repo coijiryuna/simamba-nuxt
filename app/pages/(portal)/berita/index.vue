@@ -1,5 +1,7 @@
 <script setup>
 import { Search as SearchIcon } from 'lucide-vue-next'
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 definePageMeta({
   layout: 'default'
@@ -92,7 +94,11 @@ onMounted(() => {
 useSeoMeta({
   title: 'Berita - BAZNAS Kabupaten Tangerang',
   description: 'Kumpulan berita, informasi, dan kabar terkini seputar kegiatan, program, dan inisiatif BAZNAS Kabupaten Tangerang.',
-  ogImage: '/logo.png'
+  ogImage: settings.value.site_logo || '/favicon.ico',
+  twitterImage: settings.value.site_logo || '/favicon.ico',
+  twitterTitle: 'Berita - BAZNAS Kabupaten Tangerang',
+  twitterDescription: 'Kumpulan berita, informasi, dan kabar terkini seputar kegiatan, program, dan inisiatif BAZNAS Kabupaten Tangerang.',
+  twitterCard: 'summary_large_image'
 })
 </script>
 

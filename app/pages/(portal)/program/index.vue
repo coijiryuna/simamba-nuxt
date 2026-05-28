@@ -4,6 +4,8 @@ import { Search as SearchIcon } from 'lucide-vue-next'
 definePageMeta({
   layout: 'default'
 })
+const { data: settingsRes } = await useFetch('/api/v1/settings')
+const settings = computed(() => settingsRes.value?.data || {})
 
 const route = useRoute()
 const allPosts = ref([])
@@ -90,9 +92,13 @@ onMounted(() => {
 })
 
 useSeoMeta({
-  title: 'Berita - BAZNAS Kabupaten Tangerang',
+  title: 'Program - BAZNAS Kabupaten Tangerang',
   description: 'Kumpulan berita, informasi, dan kabar terkini seputar kegiatan, program, dan inisiatif BAZNAS Kabupaten Tangerang.',
-  ogImage: '/logo.png'
+  ogImage: () => settings.value.site_logo || '/favicon.ico',
+  twitterImage: () => settings.value.site_logo || '/favicon.ico',
+  twitterTitle: 'Program - BAZNAS Kabupaten Tangerang',
+  twitterDescription: 'Informasi program dan inisiatif terkini dari BAZNAS Kabupaten Tangerang.',
+  twitterCard: 'summary_large_image'
 })
 </script>
 
@@ -100,8 +106,8 @@ useSeoMeta({
   <div class="max-w-7xl mx-auto px-4 py-4">
     <div class="flex justify-between items-center gap-4 mb-8">
       <div>
-        <h1 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none mb-2 ">Kabar
-          BAZNAS</h1>
+        <h1 class="text-xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter leading-none mb-2 ">Program
+          {{ settings.value.blogname }}</h1>
         <div class="w-32 h-2 bg-[#fecb00] rounded-sm"></div>
         <p class="mt-6 text-slate-500 font-medium uppercase tracking-[0.3em] text-xs">Arsip Berita & Informasi Terkini
         </p>
