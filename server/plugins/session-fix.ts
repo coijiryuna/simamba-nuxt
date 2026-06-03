@@ -7,8 +7,7 @@ import { fileURLToPath } from 'node:url';
 function loadEnvFile() {
   const possiblePaths = [
     path.join(process.cwd(), ".env"),
-    // "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
-    "/home/www/baznas/.env",
+    "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
   ];
 
   try {
