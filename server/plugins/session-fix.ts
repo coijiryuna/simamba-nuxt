@@ -95,15 +95,15 @@ export default defineNitroPlugin(() => {
   // === Google ID ===
   if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID) {
     process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID =
-      "your_google_id.apps.googleusercontent.com";
+      "your_google_client_id.apps.googleusercontent.com";
   }
   if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET) {
-    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = "your_google_secret";
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = "your_google_client_secret";
   }
 
-  // === UPLOAD DIRECTORY === paksa untuk aapanel
+  // === UPLOAD DIRECTORY === paksa untuk panel simpan data images ke path yang sudah pasti, karena di aaPanel kadang tidak otomatis membaca env atau path relatif
   if (!process.env.UPLOAD_DIR) {
-    process.env.UPLOAD_DIR = "/home/www/baznas/uploads";
+    process.env.UPLOAD_DIR = "/path_to_upload_directory/uploads";
   }
 
   console.log(

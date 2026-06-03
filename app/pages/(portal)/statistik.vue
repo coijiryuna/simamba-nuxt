@@ -23,9 +23,10 @@ useSeoMeta({
 })
 
 const tahun = ref(new Date().getFullYear())
+const bulan = ref(0)
 
 const { data: statsRes, pending, refresh } = await useFetch('/api/v1/dashboard-stats', {
-  query: computed(() => ({ tahun: tahun.value }))
+  query: computed(() => ({ tahun: tahun.value, bulan: bulan.value }))
 })
 
 const stats = computed(() => statsRes.value?.data || {})
@@ -171,11 +172,11 @@ const availableYears = computed(() => {
           </div>
         </div>
 
-        <!-- SEBARAN ASNAF -->
+        <!-- SEBARAN ASNAF Pendistribusian-->
         <div class="bg-white rounded-sm shadow-xl border border-slate-100 overflow-hidden">
           <div class="px-6 py-5 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
             <PieChart class="w-5 h-5 text-purple-600" />
-            <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest">Sebaran Asnaf</h2>
+            <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest">Sebaran Asnaf (Pendistribusian)</h2>
           </div>
           <div class="p-6">
             <div class="space-y-4">
@@ -191,6 +192,34 @@ const availableYears = computed(() => {
                   <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div class="h-full rounded-full transition-all duration-1000" :class="sectorColor(idx)"
                       :style="{ width: Math.min((a.realisasi / (totalRealisasi || 1)) * 100 * 5, 100) + '%' }"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Asnaf -->
+        <div class="bg-white rounded-sm shadow-xl border border-slate-100 overflow-hidden">
+          <div class="px-6 py-5 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+            <PieChart class="w-5 h-5 text-purple-600" />
+            <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest">Sebaran Asnaf (Pendayagunaan)</h2>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              <div v-for="(b, idx) in asnafDaya" :key="b.asnaf" class="flex items-center gap-4 group">
+                <div
+                  class="w-8 h-8 rounded-sm flex items-center justify-center text-[10px] font-black shrink-0 shadow-sm"
+                  :class="sectorColor(idx)">
+                  {{ b.asnaf.charAt(0) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-black text-slate-700 uppercase truncate">{{ b.asnaf }}</span>
+                    <span class="text-[10px] font-black text-slate-800">{{ fmtShort(b.realisasi) }}</span>
+                  </div>
+                  <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-1000" :class="sectorColor(idx)"
+                      :style="{ width: Math.min((b.realisasi / (totalRealisasi || 1)) * 100 * 5, 100) + '%' }"></div>
                   </div>
                 </div>
               </div>
