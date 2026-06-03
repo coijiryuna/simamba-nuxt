@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 function loadEnvFile() {
   const possiblePaths = [
     path.join(process.cwd(), ".env"),
-    "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
+    // "/mnt/29313803-a281-424e-847b-7e06ff0df2db/simamba-nuxt/.env",
   ];
 
   try {
@@ -72,6 +72,14 @@ export default defineNitroPlugin(() => {
     process.env.MIDTRANS_IS_PRODUCTION = "true";
   }
 
+  if (!process.env.MIDTRANS_SERVER_KEY) {
+    process.env.MIDTRANS_SERVER_KEY = "";
+  }
+
+  if (!process.env.MIDTRANS_CLIENT_KEY) {
+    process.env.MIDTRANS_CLIENT_KEY = "";
+  }
+
   // === JWT & SECURITY ===
   if (!process.env.JWT_SECRET_BYZIS) {
     process.env.JWT_SECRET_BYZIS = "baznas_tangerang_secret_byzis_2024";
@@ -87,22 +95,22 @@ export default defineNitroPlugin(() => {
   if (!process.env.API_BASE) {
     process.env.API_BASE = "https://baznastangerangkab.or.id/api";
   }
+
   if (!process.env.DONASI_BASE) {
     process.env.DONASI_BASE = "https://donasi.baznastangerangkab.or.id";
   }
 
   // === Google ID ===
   if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID) {
-    process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID =
-      "your_google_client_id.apps.googleusercontent.com";
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID = ".apps.googleusercontent.com";
   }
   if (!process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET) {
-    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = "your_google_client_secret";
+    process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET = "";
   }
 
   // === UPLOAD DIRECTORY === paksa untuk panel simpan data images ke path yang sudah pasti, karena di aaPanel kadang tidak otomatis membaca env atau path relatif
   if (!process.env.UPLOAD_DIR) {
-    process.env.UPLOAD_DIR = "/path_to_upload_directory/uploads";
+    process.env.UPLOAD_DIR = "/home/www/baznas/uploads";
   }
 
   console.log(

@@ -5,6 +5,7 @@
 .nitro
 .cache
 dist
+server/plugins/session-fix.ts
 
 # Node dependencies
 node_modules
