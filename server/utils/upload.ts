@@ -11,7 +11,7 @@ import sharp from 'sharp';
  */
 export const getUploadBaseDir = () => {
   const config = useRuntimeConfig();
-  const uploadDir = config.uploadDir || process.env.UPLOAD_DIR || process.env.NUXT_UPLOAD_DIR;
+  const uploadDir = config.uploadDir;
   if (uploadDir) {
     return uploadDir;
   }

@@ -10,9 +10,9 @@ export default defineEventHandler(async (event) => {
 
   const REDIRECT_URI = 'https://baznastangerangkab.or.id/api/byzis/user/google-login';
   const FRONTEND_CALLBACK = 'https://donasi.baznastangerangkab.or.id/auth/google/callback';
-  const CLIENT_ID = (process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID || config.googleClientId || '') as string;
-  const CLIENT_SECRET = (process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET || config.googleClientSecret || '') as string;
-  const JWT_SECRET = (process.env.JWT_SECRET_BYZIS || config.jwtSecretByzis || 'baznas_secret') as string;
+  const CLIENT_ID = (config.googleClientId || '') as string;
+  const CLIENT_SECRET = (config.googleClientSecret || '') as string;
+  const JWT_SECRET = (config.jwtSecretByzis || 'baznas_secret') as string;
 
   // Jika Google mengembalikan error
   if (errorParam) {

@@ -46,48 +46,38 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Session password untuk nuxt-auth-utils
-    sessionPassword:
-      process.env.NUXT_SESSION_PASSWORD || "23d8427157ff4361a8ee053bf37a57aa",
+    sessionPassword: "23d8427157ff4361a8ee053bf37a57aa",
 
-    // SIMBA API
-    simbaUrl: process.env.SIMBA_URL,
-    simbaOrg: process.env.SIMBA_ORG,
-    simbaKey: process.env.SIMBA_KEY,
+    simbaUrl: "",
+    simbaOrg: "",
+    simbaKey: "",
 
-    // Variabel Database Utama (Simamba) di Server)
-    databaseHost: process.env.DATABASE_HOST,
-    databaseUser: process.env.DATABASE_USER,
-    databasePassword: process.env.DATABASE_PASSWORD,
-    databaseName: process.env.DATABASE_NAME,
-    databasePort: process.env.DATABASE_PORT || 3306,
+    databaseHost: "localhost",
+    databaseUser: "",
+    databasePassword: "",
+    databaseName: "",
+    databasePort: "3306",
 
-    // Variabel ByZIS
-    byzisHost: process.env.BYZIS_HOST || "localhost",
-    byzisUser: process.env.BYZIS_USER || "sql_byzis",
-    byzisPassword: process.env.BYZIS_PASSWORD || "F3SPdTmP4HcJmdxP",
-    byzisName: process.env.BYZIS_NAME || "sql_byzis",
+    byzisHost: "localhost",
+    byzisUser: "sql_byzis",
+    byzisPassword: "",
+    byzisName: "sql_byzis",
 
-    // Google OAuth (Untuk keperluan API Donasi / ByZIS)
-    googleClientId: process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID,
-    googleClientSecret: process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET,
+    googleClientId: "",
+    googleClientSecret: "",
 
-    // Upload Directory
-    uploadDir: process.env.UPLOAD_DIR || "",
+    uploadDir: "",
 
-    // Midtrans
-    midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
-    midtransClientKey: process.env.MIDTRANS_CLIENT_KEY,
-    midtransServerKey: process.env.MIDTRANS_SERVER_KEY,
+    midtransIsProduction: false,
+    midtransClientKey: "",
+    midtransServerKey: "",
 
-    // Security & JWT
-    corsAllowedOrigins: process.env.CORS_ALLOWED_ORIGINS,
-    jwtSecretByzis: process.env.JWT_SECRET_BYZIS,
+    corsAllowedOrigins: "",
+    jwtSecretByzis: "",
 
     public: {
-      apiBase: process.env.API_BASE || "/api",
-      donasiBase:
-        process.env.DONASI_BASE || "https://donasi.baznastangerangkab.or.id",
+      apiBase: "/api",
+      donasiBase: "https://donasi.baznastangerangkab.or.id",
     },
   },
   vite: {
